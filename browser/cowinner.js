@@ -58,7 +58,7 @@ function get_states(el) {
 				let tP = document.createElement("p");
 				tP.textContent = `[${state.state_id}] ${state.state_name}`;
 				el.appendChild(tP);
-				if (state.state_name.toUpperCase() !== gState) continue;
+				if (state.state_name.toUpperCase() !== gState) return;
 				let tChild = document.createElement("div");
 				el.appendChild(tChild);
 				get_districts(state.state_id, tChild);
