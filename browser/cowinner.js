@@ -12,13 +12,14 @@ function get_vaccenters(districtId, el, date=null) {
 		.then(resp => resp.json())
 		.then((oVCs) => {
 			oVCs.sessions.forEach(vc => {
+				if (vc.available_capacity === 0) return;
 				let tP = document.createElement("p");
 				let vType = '???';
 				if (vc.vaccine === "COVISHIELD")
 					vType = 'SSS';
 				else if (vc.vaccine === "COVAXIN")
 					vType = 'VVV';
-				tP.textContent = `>>> ${vType} ${vc.available_capacity} [${vc.name}, ${vc.pincode}] ${vc.min_age_limit}`;
+				tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}] ${vc.min_age_limit}`;
 				el.appendChild(tP);
 			});
 		})
