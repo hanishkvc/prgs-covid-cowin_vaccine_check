@@ -75,7 +75,8 @@ function get_states(el) {
 
 
 function start_here() {
-	elMain.innerHTML = "JS Started";
+	tP = document.getElementById("time");
+	tP.textContent = `Availability status queried at ${Date()}`;
 	get_states(elMain);
 }
 
