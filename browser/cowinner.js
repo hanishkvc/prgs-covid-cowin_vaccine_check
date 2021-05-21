@@ -54,14 +54,14 @@ function get_states(el) {
 		.then((data) => {
 			goStates = data;
 			goStates.states.forEach(state => {
-				let tP = document.createElement("p");
-				tP.textContent = `[${state.state_id}] ${state.state_name}`;
-				el.appendChild(tP);
 				let stateIndex = gStates.findIndex((curState) => {
 					if (state.state_name.toUpperCase() === curState) return true;
 					return false;
 					});
 				if (stateIndex === -1) return;
+				let tP = document.createElement("p");
+				tP.textContent = `[${state.state_id}] ${state.state_name}`;
+				el.appendChild(tP);
 				let tChild = document.createElement("div");
 				el.appendChild(tChild);
 				get_districts(state.state_id, tChild);
@@ -77,6 +77,8 @@ function get_states(el) {
 function start_here() {
 	tP = document.getElementById("time");
 	tP.textContent = `Availability status queried at ${Date()}`;
+	tP = document.getElementById("states");
+	tP.textContent = `Showing data for selected states: ${gStates}`;
 	get_states(elMain);
 }
 
