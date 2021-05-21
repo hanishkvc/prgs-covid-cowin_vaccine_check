@@ -3,7 +3,7 @@ const srvr = "https://cdn-api.co-vin.in/api";
 var goStates = null;
 var elMain = document.getElementById("main");
 var gDate = "22-05-2021";
-var gState = "KERALA";
+var gStates = [ "KERALA", "KARNATAKA" ];
 var gbShowDistrictHeader = false;
 
 
@@ -57,7 +57,11 @@ function get_states(el) {
 				let tP = document.createElement("p");
 				tP.textContent = `[${state.state_id}] ${state.state_name}`;
 				el.appendChild(tP);
-				if (state.state_name.toUpperCase() !== gState) return;
+				let stateIndex = gStates.findIndex((curState) => {
+					if (state.state_name.toUpperCase() === curState) return true;
+					return false;
+					});
+				if (stateIndex === -1) return;
 				let tChild = document.createElement("div");
 				el.appendChild(tChild);
 				get_districts(state.state_id, tChild);
