@@ -4,9 +4,10 @@ var goStates = null;
 var elMain = document.getElementById("main");
 var gDate = "22-05-2021";
 var gState = "KERALA";
+var gbShowDistrictHeader = false;
 
 
-function get_vaccenters(districtId, el, date=null) {
+function get_vaccenters(el, districtId, districtName, date=null) {
 	if (date === null) date = gDate;
 	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`)
 		.then(resp => resp.json())
@@ -14,12 +15,7 @@ function get_vaccenters(districtId, el, date=null) {
 			oVCs.sessions.forEach(vc => {
 				if (vc.available_capacity === 0) return;
 				let tP = document.createElement("p");
-				let vType = '???';
-				if (vc.vaccine === "COVISHIELD")
-					vType = 'SSS';
-				else if (vc.vaccine === "COVAXIN")
-					vType = 'VVV';
-				tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}] ${vc.min_age_limit}`;
+				tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${districtName}] for ${vc.min_age_limit}+`;
 				el.appendChild(tP);
 			});
 		})
@@ -35,12 +31,14 @@ function get_districts(stateId, el) {
 		.then(resp => resp.json())
 		.then((oDists) => {
 			oDists.districts.forEach(dist => {
-				let tP = document.createElement("p");
-				tP.textContent = `>>> [${dist.district_id}] ${dist.district_name}`;
-				el.appendChild(tP);
+				if (gbShowDistrictHeader) {
+					let tP = document.createElement("p");
+					tP.textContent = `>>> [${dist.district_id}] ${dist.district_name}`;
+					el.appendChild(tP);
+				}
 				let tChild = document.createElement("div");
 				el.appendChild(tChild);
-				get_vaccenters(dist.district_id, tChild);
+				get_vaccenters(tChild, dist.district_id, dist.district_name);
 			});
 		})
 		.catch((error) => {
