@@ -6,6 +6,9 @@
 
 
 var elMain = document.getElementById("main");
+var elState = document.getElementById("vstate");
+var elDate = document.getElementById("vdate");
+var elSearch = document.getElementById("vsearch");
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 
@@ -26,8 +29,11 @@ function show_vcs(el, db) {
 }
 
 
-function start_here() {
-	console.log("INFO:StartHere:...");
+function search_clicked(ev) {
+	gStates = [ elState.value ];
+	tDate = elDate.value.split('-');
+	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
+	console.log("INFO:SearchClicked:", gStates, gDate);
 	tP = document.getElementById("time");
 	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
@@ -37,6 +43,12 @@ function start_here() {
 		.then(() => {
 			show_vcs(elMain, db);
 		});
+}
+
+
+function start_here() {
+	console.log("INFO:StartHere:...");
+	elSearch.onclick = search_clicked;
 }
 
 
