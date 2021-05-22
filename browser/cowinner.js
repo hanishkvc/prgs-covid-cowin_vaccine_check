@@ -46,19 +46,19 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 async function dbget_districts(db, stateId) {
 	db.states[stateId]['districts'] = {};
-	await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
-		.then(resp => resp.json())
-		.then((oDists) => {
-			oDists.districts.forEach(dist => {
-				db.states[stateId].districts[dist.district_id] = {};
-				db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
-				console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
-				await dbget_vaccenters(db, stateId, dist.district_id);
-			});
-		})
-		.catch((error) => {
-			console.error("ERRR:DbGetDistricts:", error)
-		});
+	try {
+		let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
+		let oDists = await resp.json()
+		for(distK in oDists.districts) {
+			let dist = oDists.districts[distK];
+			db.states[stateId].districts[dist.district_id] = {};
+			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
+			console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
+			await dbget_vaccenters(db, stateId, dist.district_id);
+		}
+	} catch(error) {
+		console.error("ERRR:DbGetDistricts:", error)
+	}
 }
 
 
