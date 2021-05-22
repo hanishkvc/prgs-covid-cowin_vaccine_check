@@ -21,12 +21,10 @@ function dbget_vaccenters(db, stateId, districtId, date=null) {
 			var vacCenters = {};
 			oVCs.sessions.forEach(vc => {
 				if (vc.available_capacity === 0) return;
-				vacCenters[vc.name] = {}
-				vacCenters[vc.name]['pincode'] = vc.pincode;
-				vacCenters[vc.name]['min_age_limit'] = vc.min_age_limit;
-				vacCenters[vc.name]['vaccine'] = vc.vaccine;
-				vacCenters[vc.name]['available_capacity'] = vc.available_capacity;
-				console.log("INFO:DbGetVacCenters:", vc.name, vacCenters[vc.name]);
+				vacCenters[vc.name] = vc;
+				let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
+				let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
+				console.log(`INFO:DbGetVacCenters: ${sLocation} -- ${sVC}`);
 			});
 			db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 		})
