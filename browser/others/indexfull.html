@@ -11,6 +11,7 @@
 		VacDate: <input type="date" name="vdate" id="vdate">
 		<button id="vsearch" name="vsearch"> Search </button>
 		<div id="main"> </div>
+		<div id="status"> Save Nature Save Earth </div>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				start_here();
@@ -22,9 +23,15 @@
 			var elState = document.getElementById("vstate");
 			var elDate = document.getElementById("vdate");
 			var elSearch = document.getElementById("vsearch");
+			var elStatus = document.getElementById("status");
 			var gDate = "22-05-2021";
-			var gStates = [ "KERALA", "KARNATAKA" ];
+			var gStates = [ "KERALA", "KARNATAKA", "HKVC" ];
 			var gbShowDistrictHeader = false;
+
+
+			function update_status(msg) {
+				elStatus.innerHTML = msg;
+			}
 
 
 			function get_vaccenters(el, districtId, districtName, date=null) {
@@ -38,10 +45,11 @@
 							tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${districtName}] for ${vc.min_age_limit}+`;
 							el.appendChild(tP);
 						});
+						update_status("Done");
 					})
 					.catch((error) => {
 						console.error(error)
-						el.innerHTML = "<h2>ERROR:Fetching Vaccine centers</h2>";
+						update_status("<h2>ERROR:Fetching Vaccine centers</h2>");
 					});
 			}
 
@@ -53,6 +61,7 @@
 					.then((oDists) => {
 						oDists.districts.forEach(dist => {
 							console.log("INFO:GetDistricts:", dist.district_name);
+							update_status(`INFO:GetDistricts: ${dist.district_name}`);
 							if (gbShowDistrictHeader) {
 								let tP = document.createElement("p");
 								tP.textContent = `>>> [${dist.district_id}] ${dist.district_name}`;
@@ -65,7 +74,7 @@
 					})
 					.catch((error) => {
 						console.error(error)
-						el.innerHTML = "<h2>ERROR:Fetching Districts</h2>";
+						update_status("<h2>ERROR:Fetching Districts</h2>");
 					});
 			}
 
@@ -77,6 +86,7 @@
 						goStates = data;
 						<!-- console.log("INFO:GetStates:", gStates, gDate, goStates); -->
 						goStates.states.forEach(state => {
+							update_status(`INFO:GetStates: ${state.state_name}`);
 							let stateIndex = gStates.findIndex((curState) => {
 								if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
 								return false;
@@ -92,7 +102,7 @@
 					})
 					.catch((error) => {
 						console.error(error)
-						el.innerHTML = "<h2>ERROR:Fetching States</h2>";
+						update_status("<h2>ERROR:Fetching States</h2>");
 					});
 			}
 
