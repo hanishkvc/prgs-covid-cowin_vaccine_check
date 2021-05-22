@@ -73,9 +73,10 @@ async function dbget_states(db, states2Get) {
 	db['states'] = {};
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
-		let data = resp.json()
+		let data = await resp.json()
 		for(stateK in data.states) {
 			let state = data.states[stateK];
+			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
 			let stateIndex = states2Get.findIndex((curState) => {
 				if (state.state_name.toUpperCase() === curState) return true;
 				return false;
@@ -83,7 +84,6 @@ async function dbget_states(db, states2Get) {
 			if (stateIndex === -1) continue;
 			db.states[state.state_id] = {};
 			db.states[state.state_id]['name'] = state.state_name;
-			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
 			await dbget_districts(db, state.state_id);
 		}
 	} catch(error) {

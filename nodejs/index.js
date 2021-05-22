@@ -38,8 +38,7 @@ function handle_args(cmdArgs) {
 
 handle_args(process.argv.slice(2));
 var db = { 'date': gDate, 'vaccine': gVaccine };
-cw.dbget_states(db, [ gState ]).then(function(){
-	console.log("INFO", db);
+cw.dbget_states(db, [ gState ]).then(() => {
 	console.log("INFO: Done");
 	});
 
