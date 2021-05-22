@@ -24,24 +24,23 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	var vacType = db['vaccine'];
 	if (vacType === undefined) vacType = null;
-	await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
-		.then(resp => resp.json())
-		.then((oVCs) => {
-			var vacCenters = {};
-			oVCs.sessions.forEach(vc => {
-				if (vc.available_capacity === 0) return;
-				//if ((vacType !== undefined) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
-				if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
-				vacCenters[vc.name] = vc;
-				let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
-				let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
-				console.log(`INFO:DbGetVacCenters: ${sLocation} -- ${sVC}`);
+	try {
+		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
+		let oVCs = await resp.json();
+		var vacCenters = {};
+		oVCs.sessions.forEach(vc => {
+			if (vc.available_capacity === 0) return;
+			//if ((vacType !== undefined) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
+			if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
+			vacCenters[vc.name] = vc;
+			let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
+			let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
+			console.log(`INFO:DbGetVacCenters: ${sLocation} -- ${sVC}`);
 			});
-			db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
-		})
-		.catch((error) => {
-			console.error("ERRR:DbGetVacCenters:", error)
-		});
+		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
+	} catch(error) {
+		console.error("ERRR:DbGetVacCenters:", error)
+	}
 }
 
 
