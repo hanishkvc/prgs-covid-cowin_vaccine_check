@@ -6,11 +6,16 @@
 
 
 const srvr = "https://cdn-api.co-vin.in/api";
+var fetchOptions = {
+	headers: {
+		"User-Agent": "india-hkvc/20210522 node-fetch/202105"
+		}
+	}
 
 
 function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
-	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`)
+	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		.then(resp => resp.json())
 		.then((oVCs) => {
 			var vacCenters = {};
@@ -33,7 +38,7 @@ function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 function dbget_districts(db, stateId) {
 	db.states[stateId]['districts'] = {};
-	fetch(`${srvr}/v2/admin/location/districts/${stateId}`)
+	fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
 		.then(resp => resp.json())
 		.then((oDists) => {
 			oDists.districts.forEach(dist => {
@@ -57,7 +62,7 @@ function dbget_districts(db, stateId) {
  */
 function dbget_states(db, states2Get) {
 	db['states'] = {};
-	fetch(`${srvr}/v2/admin/location/states`)
+	fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
 		.then(resp => resp.json())
 		.then((data) => {
 			data.states.forEach(state => {
@@ -76,5 +81,8 @@ function dbget_states(db, states2Get) {
 			console.error("ERRR:DbGetStates:", error)
 		});
 }
+
+
+exports.dbget_states = dbget_states;
 
 
