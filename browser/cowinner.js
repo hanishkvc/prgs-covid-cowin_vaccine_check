@@ -1,49 +1,50 @@
+/*
+ * Module to help get data from cowin site, using the exposed pulbic api
+ * HanishKVC, 2021
+ * GPL
+ */
+
 
 const srvr = "https://cdn-api.co-vin.in/api";
-var goStates = null;
-var elMain = document.getElementById("main");
-var gDate = "22-05-2021";
-var gStates = [ "KERALA", "KARNATAKA" ];
-var gbShowDistrictHeader = false;
 
 
-function get_vaccenters(el, districtId, districtName, date=null) {
-	if (date === null) date = gDate;
+function dbget_vaccenters(db, stateId, districtId, date=null) {
+	if (date === null) date = db['date'];
 	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`)
 		.then(resp => resp.json())
 		.then((oVCs) => {
+			var vacCenters = {};
 			oVCs.sessions.forEach(vc => {
 				if (vc.available_capacity === 0) return;
-				let tP = document.createElement("p");
-				tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${districtName}] for ${vc.min_age_limit}+`;
-				el.appendChild(tP);
+				vacCenters[vc.name] = {}
+				vacCenters[vc.name]['pincode'] = vc.pincode;
+				vacCenters[vc.name]['min_age_limit'] = vc.min_age_limit;
+				vacCenters[vc.name]['vaccine'] = vc.vaccine;
+				vacCenters[vc.name]['available_capacity'] = vc.available_capacity;
+				console.log("INFO:DbGetVacCenters:", vacCenters[vc.name]);
 			});
+			db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 		})
 		.catch((error) => {
-			console.error(error)
-			el.innerHTML = "<h2>ERROR:Fetching Vaccine centers</h2>";
+			console.error("ERRR:DbGetVacCenters:", error)
 		});
 }
 
 
-function get_districts(stateId, el) {
+function dbget_districts(db, stateId) {
+	db.states[stateId]['districts'] = {};
 	fetch(`${srvr}/v2/admin/location/districts/${stateId}`)
 		.then(resp => resp.json())
 		.then((oDists) => {
 			oDists.districts.forEach(dist => {
-				if (gbShowDistrictHeader) {
-					let tP = document.createElement("p");
-					tP.textContent = `>>> [${dist.district_id}] ${dist.district_name}`;
-					el.appendChild(tP);
-				}
-				let tChild = document.createElement("div");
-				el.appendChild(tChild);
-				get_vaccenters(tChild, dist.district_id, dist.district_name);
+				db.states[stateId].districts[dist.district_id] = {};
+				db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
+				console.log("ERRR:DbGetDistricts:", dist.district_id, dist.district_name);
+				get_vaccenters(db, stateId, dist.district_id);
 			});
 		})
 		.catch((error) => {
-			console.error(error)
-			el.innerHTML = "<h2>ERROR:Fetching Districts</h2>";
+			console.error("ERRR:DbGetDistricts:", error)
 		});
 }
 
@@ -51,6 +52,7 @@ function get_districts(stateId, el) {
 /*
  * Get details about vaccine availability wrt specified list of states
  * db : the object which will contain the details
+ * 	db['date'] : the date for which availability data should be fetched
  * states2Get : the list of states to get data for
  */
 function dbget_states(db, states2Get) {
@@ -64,13 +66,14 @@ function dbget_states(db, states2Get) {
 					return false;
 					});
 				if (stateIndex === -1) return;
-				db.states[state.state_id] = state.state_name;
-				console.log(state.state_id, state.state_name);
+				db.states[state.state_id] = {};
+				db.states[state.state_id]['name'] = state.state_name;
+				console.log("INFO:DbGetStates:", state.state_id, state.state_name);
 				get_districts(db, state.state_id);
 			});
 		})
 		.catch((error) => {
-			console.error(error)
+			console.error("ERRR:DbGetStates:", error)
 		});
 }
 
