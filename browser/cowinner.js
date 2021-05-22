@@ -20,11 +20,11 @@ var fetchOptions = {
  * db['vaccine'] : the vaccine one is interested in. If not specified, all vaccine
  * 	types will be selected.
  */
-function dbget_vaccenters(db, stateId, districtId, date=null) {
+async function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	var vacType = db['vaccine'];
 	if (vacType === undefined) vacType = null;
-	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
+	await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		.then(resp => resp.json())
 		.then((oVCs) => {
 			var vacCenters = {};
@@ -45,16 +45,16 @@ function dbget_vaccenters(db, stateId, districtId, date=null) {
 }
 
 
-function dbget_districts(db, stateId) {
+async function dbget_districts(db, stateId) {
 	db.states[stateId]['districts'] = {};
-	fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
+	await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
 		.then(resp => resp.json())
 		.then((oDists) => {
 			oDists.districts.forEach(dist => {
 				db.states[stateId].districts[dist.district_id] = {};
 				db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 				console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
-				dbget_vaccenters(db, stateId, dist.district_id);
+				await dbget_vaccenters(db, stateId, dist.district_id);
 			});
 		})
 		.catch((error) => {
@@ -84,7 +84,7 @@ async function dbget_states(db, states2Get) {
 				db.states[state.state_id] = {};
 				db.states[state.state_id]['name'] = state.state_name;
 				console.log("INFO:DbGetStates:", state.state_id, state.state_name);
-				dbget_districts(db, state.state_id);
+				await dbget_districts(db, state.state_id);
 			});
 		})
 		.catch((error) => {
