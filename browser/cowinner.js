@@ -45,7 +45,7 @@ function dbget_districts(db, stateId) {
 				db.states[stateId].districts[dist.district_id] = {};
 				db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 				console.log("ERRR:DbGetDistricts:", dist.district_id, dist.district_name);
-				get_vaccenters(db, stateId, dist.district_id);
+				dbget_vaccenters(db, stateId, dist.district_id);
 			});
 		})
 		.catch((error) => {
@@ -74,7 +74,7 @@ function dbget_states(db, states2Get) {
 				db.states[state.state_id] = {};
 				db.states[state.state_id]['name'] = state.state_name;
 				console.log("INFO:DbGetStates:", state.state_id, state.state_name);
-				get_districts(db, state.state_id);
+				dbget_districts(db, state.state_id);
 			});
 		})
 		.catch((error) => {
