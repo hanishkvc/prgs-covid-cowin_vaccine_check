@@ -26,7 +26,7 @@ function dbget_vaccenters(db, stateId, districtId, date=null) {
 				vacCenters[vc.name]['min_age_limit'] = vc.min_age_limit;
 				vacCenters[vc.name]['vaccine'] = vc.vaccine;
 				vacCenters[vc.name]['available_capacity'] = vc.available_capacity;
-				console.log("INFO:DbGetVacCenters:", vacCenters[vc.name]);
+				console.log("INFO:DbGetVacCenters:", vc.name, vacCenters[vc.name]);
 			});
 			db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 		})
@@ -44,7 +44,7 @@ function dbget_districts(db, stateId) {
 			oDists.districts.forEach(dist => {
 				db.states[stateId].districts[dist.district_id] = {};
 				db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
-				console.log("ERRR:DbGetDistricts:", dist.district_id, dist.district_name);
+				console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
 				dbget_vaccenters(db, stateId, dist.district_id);
 			});
 		})
