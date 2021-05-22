@@ -13,14 +13,25 @@ var fetchOptions = {
 	}
 
 
+/*
+ * Get Vaccine centers with required availability for the given state-district,
+ * inturn for the given date.
+ * date arg or db['date'] : the date for which vaccine centers should be looked up.
+ * db['vaccine'] : the vaccine one is interested in. If not specified, all vaccine
+ * 	types will be selected.
+ */
 function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
+	var vacType = db['vaccine'];
+	if (vacType === undefined) vacType = null;
 	fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		.then(resp => resp.json())
 		.then((oVCs) => {
 			var vacCenters = {};
 			oVCs.sessions.forEach(vc => {
 				if (vc.available_capacity === 0) return;
+				//if ((vacType !== undefined) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
+				if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
 				vacCenters[vc.name] = vc;
 				let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
 				let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
@@ -55,7 +66,8 @@ function dbget_districts(db, stateId) {
 /*
  * Get details about vaccine availability wrt specified list of states
  * db : the object which will contain the details
- * 	db['date'] : the date for which availability data should be fetched
+ * 	db['date'] : the date for which availability data should be fetched.
+ * 	db['vaccine'] : the vaccine one is interested in.
  * states2Get : the list of states to get data for
  */
 function dbget_states(db, states2Get) {

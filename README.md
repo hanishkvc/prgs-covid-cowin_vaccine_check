@@ -52,6 +52,10 @@ NodeJS based
 If one runs the commandline nodejs based version of the program, then one can get the list of
 vaccine centers (with vaccine availability) wrt the specified state and specified date.
 
-node index.js --state "State Name" --date "DD-MM-YYYY"
+node index.js --state "State Name" \[--date DD-MM-YYYY\] \[--vaccine vaccineName\]
+
+If date is not specified, then the current date is used.
+
+If vaccine is not specified, get vac centers for all vaccines available on the specified date.
 
 

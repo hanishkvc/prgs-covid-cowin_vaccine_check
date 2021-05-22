@@ -8,6 +8,7 @@ fetch = require('node-fetch');
 const cw = require('../browser/cowinner');
 var gDate = null;
 var gState = 'Kerala';
+var gVaccine = null;
 
 
 function handle_args(cmdArgs) {
@@ -20,6 +21,10 @@ function handle_args(cmdArgs) {
 			gDate = cmdArgs[i+1];
 			i += 1;
 		}
+		if (cmdArgs[i] === '--vaccine') {
+			gVaccine = cmdArgs[i+1];
+			i += 1;
+		}
 		i += 1;
 	}
 	if (gDate === null) {
@@ -27,11 +32,11 @@ function handle_args(cmdArgs) {
 		gDate = `${tDate.getDate()}-${tDate.getMonth()+1}-${tDate.getFullYear()}`;
 	}
 	gState = gState.toUpperCase();
-	console.log(`INFO:State=${gState}:Date=${gDate}`);
+	console.log(`INFO:State=${gState}:Date=${gDate}:Vaccine=${gVaccine}`);
 }
 
 
 handle_args(process.argv.slice(2));
-var db = { 'date': gDate };
+var db = { 'date': gDate, 'vaccine': gVaccine };
 cw.dbget_states(db, [ gState ])
 
