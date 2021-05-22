@@ -9,6 +9,7 @@ var elMain = document.getElementById("main");
 var elState = document.getElementById("vstate");
 var elDate = document.getElementById("vdate");
 var elSearch = document.getElementById("vsearch");
+var elStatus = document.getElementById("status");
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 
@@ -48,7 +49,7 @@ function search_clicked(ev) {
 	dbget_states(db, gStates)
 		.then(() => {
 			show_vcs(elMain, db);
-			div_append(elMain, "Done");
+			elStatus.innerHTML = "Done";
 		});
 }
 
