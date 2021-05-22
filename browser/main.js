@@ -13,6 +13,13 @@ var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 
 
+function div_append(el, text) {
+	let tP = document.createElement("p");
+	tP.textContent = text;
+	el.appendChild(tP);
+}
+
+
 function show_vcs(el, db) {
 	for(stateK in db.states) {
 		let state = db.states[stateK];
@@ -20,9 +27,7 @@ function show_vcs(el, db) {
 			let dist = state.districts[distK];
 			for(vcK in dist.vaccenters) {
 				let vc = dist.vaccenters[vcK];
-				let tP = document.createElement("p");
-				tP.textContent = `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${dist.name}, ${state.name}] for ${vc.min_age_limit}+`;
-				el.appendChild(tP);
+				div_append(el, `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${dist.name}, ${state.name}] for ${vc.min_age_limit}+`);
 			}
 		}
 	}
@@ -38,10 +43,12 @@ function search_clicked(ev) {
 	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
+	elMain.innerHTML = "";
 	db = { 'date': gDate };
 	dbget_states(db, gStates)
 		.then(() => {
 			show_vcs(elMain, db);
+			div_append(elMain, "Done");
 		});
 }
 

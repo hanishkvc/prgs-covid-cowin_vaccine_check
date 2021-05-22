@@ -44,10 +44,11 @@ Multifile version
 
 User needs to download the html file and the related javascript files into a folder locally
 on their machine and then User needs to load the index.html page provided by this logic.
-Inturn it will list the vac centers where vaccines are available, for the specified state/states.
+Inturn it will list the vac centers where vaccines are available, for the specified state
+and date.
 
-TODO: The state and date needs to be edited in the code for now, this will be changed to user
-selectable.
+NOTE: This is a syncronised serialised version, so it takes more time to show the results
+of the search.
 
 
 Single file version
@@ -57,6 +58,9 @@ There is also a single file (i.e both html and js in a single file) version, whi
 a user using mobile to download this single file and then run locally from the mobile.
 
 The user can enter the state and the date for which they want to check availability for.
+
+NOTE: This is a asyncronous parallel version, so the search results appear, as they become
+available, on the screen.
 
 
 NodeJS based

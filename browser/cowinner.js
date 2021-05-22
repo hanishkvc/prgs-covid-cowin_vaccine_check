@@ -78,7 +78,7 @@ async function dbget_states(db, states2Get) {
 			let state = data.states[stateK];
 			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
 			let stateIndex = states2Get.findIndex((curState) => {
-				if (state.state_name.toUpperCase() === curState) return true;
+				if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
 				return false;
 				});
 			if (stateIndex === -1) continue;
