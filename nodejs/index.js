@@ -4,5 +4,11 @@
  * GPL
  */
 
-fetch=require('node-fetch');
+fetch = require('node-fetch');
+const cw = require('../browser/cowinner');
+
+var db = { 'date': '22-05-2021' };
+cw.dbget_states(db, [ 'KERALA' ])
+
+console.log(db);
 
