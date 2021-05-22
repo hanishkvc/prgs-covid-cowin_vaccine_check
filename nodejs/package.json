@@ -1,0 +1,21 @@
+{
+  "name": "CowinVacCheck",
+  "version": "1.0.0",
+  "description": "Check Vaccine availability status from CoWin, using its public api",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "CoWin",
+    "Covid",
+    "India",
+    "Public API"
+  ],
+  "author": "HanishKVC",
+  "license": "GPL-3.0"
+}
