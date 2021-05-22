@@ -40,6 +40,7 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 	} catch(error) {
 		console.error("ERRR:DbGetVacCenters:", error)
+		update_status(`ERRR:DbGetVacCenters: ${error.message}`);
 	}
 }
 
@@ -54,10 +55,12 @@ async function dbget_districts(db, stateId) {
 			db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 			console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
+			update_status(`INFO:DbGetDistricts: ${dist.district_name}`);
 			await dbget_vaccenters(db, stateId, dist.district_id);
 		}
 	} catch(error) {
 		console.error("ERRR:DbGetDistricts:", error)
+		update_status(`ERRR:DbGetDistricts: ${error.message}`);
 	}
 }
 
@@ -77,6 +80,7 @@ async function dbget_states(db, states2Get) {
 		for(stateK in data.states) {
 			let state = data.states[stateK];
 			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
+			update_status(`INFO:DbGetStates: ${state.state_name}`);
 			let stateIndex = states2Get.findIndex((curState) => {
 				if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
 				return false;
@@ -88,6 +92,7 @@ async function dbget_states(db, states2Get) {
 		}
 	} catch(error) {
 		console.error("ERRR:DbGetStates:", error)
+		update_status(`ERRR:DbGetStates: ${error.message}`);
 	}
 }
 

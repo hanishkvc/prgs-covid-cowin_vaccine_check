@@ -21,6 +21,11 @@ function div_append(el, text) {
 }
 
 
+function update_status(msg) {
+	elStatus.innerHTML = msg;
+}
+
+
 function show_vcs(el, db) {
 	for(stateK in db.states) {
 		let state = db.states[stateK];
@@ -49,7 +54,7 @@ function search_clicked(ev) {
 	dbget_states(db, gStates)
 		.then(() => {
 			show_vcs(elMain, db);
-			elStatus.innerHTML = "Done";
+			update_status("Done");
 		});
 }
 
