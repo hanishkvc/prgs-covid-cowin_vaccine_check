@@ -7,6 +7,9 @@
 		<p> Based on CoWin PublicAPI, could be upto 30Mins old/stale data </p>
 		<div id="time"> Status queried time </div>
 		<div id="states"> Selected states </div>
+		State: <input type="text" name="vstate" id="vstate">
+		VacDate: <input type="date" name="vdate" id="vdate">
+		<button id="vsearch" name="vsearch"> Search </button>
 		<div id="main"> </div>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
@@ -16,6 +19,9 @@
 			const srvr = "https://cdn-api.co-vin.in/api";
 			var goStates = null;
 			var elMain = document.getElementById("main");
+			var elState = document.getElementById("vstate");
+			var elDate = document.getElementById("vdate");
+			var elSearch = document.getElementById("vsearch");
 			var gDate = "22-05-2021";
 			var gStates = [ "KERALA", "KARNATAKA" ];
 			var gbShowDistrictHeader = false;
@@ -41,10 +47,12 @@
 
 
 			function get_districts(stateId, el) {
+				console.log("INFO:GetDistricts:", stateId);
 				fetch(`${srvr}/v2/admin/location/districts/${stateId}`)
 					.then(resp => resp.json())
 					.then((oDists) => {
 						oDists.districts.forEach(dist => {
+							console.log("INFO:GetDistricts:", dist.district_name);
 							if (gbShowDistrictHeader) {
 								let tP = document.createElement("p");
 								tP.textContent = `>>> [${dist.district_id}] ${dist.district_name}`;
@@ -67,9 +75,10 @@
 					.then(resp => resp.json())
 					.then((data) => {
 						goStates = data;
+						<!-- console.log("INFO:GetStates:", gStates, gDate, goStates); -->
 						goStates.states.forEach(state => {
 							let stateIndex = gStates.findIndex((curState) => {
-								if (state.state_name.toUpperCase() === curState) return true;
+								if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
 								return false;
 								});
 							if (stateIndex === -1) return;
@@ -88,12 +97,22 @@
 			}
 
 
-			function start_here() {
+			function search_clicked(e) {
+				gStates = [ elState.value ];
+				tDate = elDate.value.split('-');
+				gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
+				console.log("INFO:SearchClicked:", gStates, gDate);
 				tP = document.getElementById("time");
 				tP.textContent = `Availability status queried at ${Date()}`;
 				tP = document.getElementById("states");
 				tP.textContent = `Showing data for selected states: ${gStates}`;
+				elMain.innerHTML = "";
 				get_states(elMain);
+			}
+
+
+			function start_here() {
+				elSearch.onclick = search_clicked;
 			}
 
 		</script>
