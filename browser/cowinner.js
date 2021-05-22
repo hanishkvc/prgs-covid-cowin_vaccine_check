@@ -70,9 +70,9 @@ function dbget_districts(db, stateId) {
  * 	db['vaccine'] : the vaccine one is interested in.
  * states2Get : the list of states to get data for
  */
-function dbget_states(db, states2Get) {
+async function dbget_states(db, states2Get) {
 	db['states'] = {};
-	fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
+	await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
 		.then(resp => resp.json())
 		.then((data) => {
 			data.states.forEach(state => {
