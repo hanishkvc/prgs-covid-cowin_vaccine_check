@@ -48,40 +48,30 @@ function get_districts(stateId, el) {
 }
 
 
-function get_states(el) {
+/*
+ * Get details about vaccine availability wrt specified list of states
+ * db : the object which will contain the details
+ * states2Get : the list of states to get data for
+ */
+function dbget_states(db, states2Get) {
+	db['states'] = {};
 	fetch(`${srvr}/v2/admin/location/states`)
 		.then(resp => resp.json())
 		.then((data) => {
-			goStates = data;
-			goStates.states.forEach(state => {
-				let stateIndex = gStates.findIndex((curState) => {
+			data.states.forEach(state => {
+				let stateIndex = states2Get.findIndex((curState) => {
 					if (state.state_name.toUpperCase() === curState) return true;
 					return false;
 					});
 				if (stateIndex === -1) return;
-				let tP = document.createElement("p");
-				tP.textContent = `[${state.state_id}] ${state.state_name}`;
-				el.appendChild(tP);
-				let tChild = document.createElement("div");
-				el.appendChild(tChild);
-				get_districts(state.state_id, tChild);
+				db.states[state.state_id] = state.state_name;
+				console.log(state.state_id, state.state_name);
+				get_districts(db, state.state_id);
 			});
 		})
 		.catch((error) => {
 			console.error(error)
-			el.innerHTML = "<h2>ERROR:Fetching States</h2>";
 		});
 }
 
-
-function start_here() {
-	tP = document.getElementById("time");
-	tP.textContent = `Availability status queried at ${Date()}`;
-	tP = document.getElementById("states");
-	tP.textContent = `Showing data for selected states: ${gStates}`;
-	get_states(elMain);
-}
-
-
-start_here();
 
