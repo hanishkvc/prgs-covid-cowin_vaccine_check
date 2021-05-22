@@ -71,24 +71,24 @@ async function dbget_districts(db, stateId) {
  */
 async function dbget_states(db, states2Get) {
 	db['states'] = {};
-	await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
-		.then(resp => resp.json())
-		.then((data) => {
-			data.states.forEach(state => {
-				let stateIndex = states2Get.findIndex((curState) => {
-					if (state.state_name.toUpperCase() === curState) return true;
-					return false;
-					});
-				if (stateIndex === -1) return;
-				db.states[state.state_id] = {};
-				db.states[state.state_id]['name'] = state.state_name;
-				console.log("INFO:DbGetStates:", state.state_id, state.state_name);
-				await dbget_districts(db, state.state_id);
-			});
-		})
-		.catch((error) => {
-			console.error("ERRR:DbGetStates:", error)
-		});
+	try {
+		let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
+		let data = resp.json()
+		for(stateK in data.states) {
+			let state = data.states[stateK];
+			let stateIndex = states2Get.findIndex((curState) => {
+				if (state.state_name.toUpperCase() === curState) return true;
+				return false;
+				});
+			if (stateIndex === -1) continue;
+			db.states[state.state_id] = {};
+			db.states[state.state_id]['name'] = state.state_name;
+			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
+			await dbget_districts(db, state.state_id);
+		}
+	} catch(error) {
+		console.error("ERRR:DbGetStates:", error)
+	}
 }
 
 
