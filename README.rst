@@ -39,11 +39,24 @@ and notification purpose.
 Browser based
 =================
 
-User needs to load the index.html page provided by this logic and inturn it will list the vac
-centers where vaccines are available, for the specified state/states.
+Multifile version
+---------------------
 
-NOTE: The states and date needs to be edited in the code for now, this will be changed to user
-selectable shortly.
+User needs to download the html file and the related javascript files into a folder locally
+on their machine and then User needs to load the index.html page provided by this logic.
+Inturn it will list the vac centers where vaccines are available, for the specified state/states.
+
+TODO: The state and date needs to be edited in the code for now, this will be changed to user
+selectable.
+
+
+Single file version
+---------------------
+
+There is also a single file (i.e both html and js in a single file) version, which should allow
+a user using mobile to download this single file and then run locally from the mobile.
+
+The user can enter the state and the date for which they want to check availability for.
 
 
 NodeJS based
