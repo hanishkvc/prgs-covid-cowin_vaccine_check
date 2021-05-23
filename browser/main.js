@@ -59,14 +59,19 @@ function show_vcs(el, db) {
 }
 
 
+function handle_statedone(db, stateId) {
+	tP = document.getElementById("time");
+	let dateTime = new Date(db.states[stateId].time);
+	tP.textContent = `Availability status queried at ${dateTime}`;
+}
+
+
 function search_clicked(ev) {
 	gStates = [ elState.value ];
 	tDate = elDate.value.split('-');
 	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
 	gVac = elVac.value;
 	console.log("INFO:SearchClicked:", gStates, gDate);
-	tP = document.getElementById("time");
-	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
 	tbl_clear(elMainTbl, 1);
@@ -84,6 +89,7 @@ function search_clicked(ev) {
 function start_here() {
 	console.log("INFO:StartHere:...");
 	db = {};
+	db['cb_dbgetstates_statedone'] = handle_statedone;
 	elSearch.onclick = search_clicked;
 }
 
