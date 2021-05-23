@@ -14,6 +14,7 @@ var fetchOptions = {
 
 
 function vaccenter_string(db, stateId, districtId, centerId) {
+	//console.log("INFO:VacCenterString:", stateId, districtId, centerId);
 	let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
 	vc = db.states[stateId].districts[districtId].vaccenters[centerId];
 	let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
@@ -61,6 +62,7 @@ async function dbget_districts(db, stateId) {
 			let dist = oDists.districts[distK];
 			db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
+			db.states[stateId].districts[dist.district_id]['district_id'] = dist.district_id;
 			console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
 			update_status(`INFO:DbGetDistricts: ${dist.district_name}`);
 			await dbget_vaccenters(db, stateId, dist.district_id);
@@ -95,6 +97,7 @@ async function dbget_states(db, states2Get) {
 			if (stateIndex === -1) continue;
 			db.states[state.state_id] = {};
 			db.states[state.state_id]['name'] = state.state_name;
+			db.states[state.state_id]['state_id'] = state.state_id;
 			await dbget_districts(db, state.state_id);
 		}
 	} catch(error) {
