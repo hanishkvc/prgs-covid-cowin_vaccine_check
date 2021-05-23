@@ -21,14 +21,16 @@ function div_append(el, text) {
 }
 
 
-function tbl_clear(el) {
-	let tB = document.getElementsByTagName("tbody")[0];
-	tB.innerHTML = "";
+function tbl_clear(el, parts=[ "tbody", "thead"]) {
+	parts.forEach((part) => {
+		let tB = document.getElementsByTagName(part)[0];
+		tB.innerHTML = "";
+	});
 }
 
 
-function tbl_append(el, datas) {
-	let tB = document.getElementsByTagName("tbody")[0];
+function tbl_append(el, datas, part="tbody") {
+	let tB = document.getElementsByTagName(part)[0];
 	let tR = document.createElement("tr");
 	datas.forEach((data) => {
 		let tD = document.createElement("td");
@@ -45,6 +47,7 @@ function update_status(msg) {
 
 
 function show_vcs(el, db) {
+	tbl_append(el, [ "Vaccine", "Qnty", "Name", "Pincode", "Dist", "State", "AgeGrp" ], "thead");
 	for(stateK in db.states) {
 		let state = db.states[stateK];
 		for(distK in state.districts) {
