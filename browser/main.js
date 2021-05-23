@@ -9,9 +9,11 @@ var elMainTbl = document.getElementById("maintbl");
 var elState = document.getElementById("vstate");
 var elDate = document.getElementById("vdate");
 var elSearch = document.getElementById("vsearch");
+var elVac = document.getElementById("vvac");
 var elStatus = document.getElementById("status");
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
+var gVac = "ANY";
 
 
 function div_append(el, text) {
@@ -60,13 +62,14 @@ function search_clicked(ev) {
 	gStates = [ elState.value ];
 	tDate = elDate.value.split('-');
 	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
+	gVac = elVac.value;
 	console.log("INFO:SearchClicked:", gStates, gDate);
 	tP = document.getElementById("time");
 	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
 	tbl_clear(elMainTbl);
-	db = { 'date': gDate };
+	db = { 'date': gDate, 'vaccine': gVac };
 	dbget_states(db, gStates)
 		.then(() => {
 			show_vcs(elMainTbl, db);

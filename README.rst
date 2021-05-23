@@ -59,7 +59,10 @@ vaccine centers if any with slot availability.
 Multifile version
 ---------------------
 
-NOTE: This is a syncronised serialised version, so it takes more time to show the results
+User can enter the name of the state they want to search for, the vaccine they want, along
+with the date for which they want to check vaccine slot availability.
+
+NOTE: This is a syncronised serialised version, so it takes some time to show the results
 of the search.
 
 From your local machine

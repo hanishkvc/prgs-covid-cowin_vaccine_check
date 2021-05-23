@@ -11,10 +11,16 @@
 	<body>
 		<h1> CoWin Vaccine Availability Status </h1>
 		<p> Based on CoWin PublicAPI, could be upto 30Mins old/stale data </p>
-		<div id="time"> Select the date to check vaccination slot availability for </div>
-		<div id="states"> Enter the name of the state to check for </div>
+		<div id="states"> To check for vaccine slot availability </div>
+		<div id="time"> Enter the state name, select a date to check for and the vaccine </div>
 		State: <input type="text" name="vstate" id="vstate">
 		VacDate: <input type="date" name="vdate" id="vdate">
+		Vaccine:
+		<select name="vvac" id="vvac">
+			<option value="ANY"> ANY </option>
+			<option value="Covishield"> Covishield </option>
+			<option value="Covaxin"> Covaxin </option>
+		</select>
 		<button id="vsearch" name="vsearch"> Search </button>
 		<div id="main">
 			<table id="maintbl">
