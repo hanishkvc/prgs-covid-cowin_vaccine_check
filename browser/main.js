@@ -72,7 +72,8 @@ function search_clicked(ev) {
 	tbl_clear(elMainTbl, 1);
 	db['date'] = gDate;
 	db['vaccine'] = gVac;
-	dbget_states(db, gStates)
+	db['s_states'] = gStates;
+	dbget_states(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
 			update_status("Done");

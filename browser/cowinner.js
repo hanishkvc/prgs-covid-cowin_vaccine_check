@@ -75,6 +75,13 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 	}
 	for(sk in db.states) {
 		let state = db.states[sk];
+		let stateIndex = db.s_states.findIndex((curState) => {
+			//console.log("DBUG:DBLookUpVCs:state", state);
+			//console.log("DBUG:DBLookUpVCs:curState", curState);
+			if (state.name.toUpperCase() === curState.toUpperCase()) return true;
+			return false;
+			});
+		if (stateIndex === -1) continue;
 		for(dk in state.districts) {
 			let dist = state.districts[dk];
 			for(vk in dist.vaccenters) {
@@ -179,8 +186,13 @@ async function dbget_districts(db, stateId) {
  * 	db['vaccine'] : the vaccine one is interested in.
  * states2Get : the list of states to get data for
  */
-async function dbget_states(db, states2Get) {
+async function dbget_states(db, states2Get=null) {
 	if (db['states'] === undefined) db['states'] = {};
+	if (states2Get === null) {
+		states2Get = db['s_states'];
+	} else {
+		db['s_states'] = states2Get;
+	}
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
 		let data = await resp.json()
