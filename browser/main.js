@@ -23,16 +23,16 @@ function div_append(el, text) {
 }
 
 
-function tbl_clear(el, parts=[ "tbody", "thead"]) {
+function tbl_clear(el, index, parts=[ "tbody", "thead"]) {
 	parts.forEach((part) => {
-		let tB = document.getElementsByTagName(part)[0];
+		let tB = document.getElementsByTagName(part)[index];
 		tB.innerHTML = "";
 	});
 }
 
 
-function tbl_append(el, datas, part="tbody") {
-	let tB = document.getElementsByTagName(part)[0];
+function tbl_append(el, index, datas, part="tbody") {
+	let tB = document.getElementsByTagName(part)[index];
 	let tR = document.createElement("tr");
 	datas.forEach((data) => {
 		let tD = document.createElement("td");
@@ -49,11 +49,11 @@ function update_status(msg) {
 
 
 function show_vcs(el, db) {
-	tbl_append(el, [ "Vaccine", "Dose1", "Dose2", "Name", "Pincode", "Dist", "State", "Age" ], "thead");
+	tbl_append(el, 1, [ "Vaccine", "Dose1", "Dose2", "Name", "Pincode", "Dist", "State", "Age" ], "thead");
 	dblookup_vaccenters(db, function(db, sk, dk, vc) {
 		state = db.states[sk];
 		dist = state.districts[dk];
-		tbl_append(el, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+` ]);
+		tbl_append(el, 1, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+` ]);
 		});
 }
 
@@ -68,7 +68,7 @@ function search_clicked(ev) {
 	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
-	tbl_clear(elMainTbl);
+	tbl_clear(elMainTbl, 1);
 	db = { 'date': gDate, 'vaccine': gVac };
 	dbget_states(db, gStates)
 		.then(() => {

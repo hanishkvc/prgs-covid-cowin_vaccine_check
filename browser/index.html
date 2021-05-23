@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title> CoWin Vaccine Availability Status </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			table { border: 1px solid #333; }
 			td { border: 1px solid #A0A0A0; padding: 4px; }
@@ -9,26 +10,40 @@
 		<script defer src="cowinner.js"></script>
 	</head>
 	<body>
-		<h1> CoWin Vaccine Availability Status </h1>
-		<p> Based on CoWin PublicAPI, could be upto 30Mins old/stale data </p>
-		<div id="states"> To check for vaccine slot availability </div>
-		<div id="time"> Enter the state name, select a date to check for and the vaccine </div>
-		State: <input type="text" name="vstate" id="vstate">
-		VacDate: <input type="date" name="vdate" id="vdate">
-		Vaccine:
-		<select name="vvac" id="vvac">
-			<option value="ANY"> ANY </option>
-			<option value="Covishield"> Covishield </option>
-			<option value="Covaxin"> Covaxin </option>
-		</select>
-		<button id="vsearch" name="vsearch"> Search </button>
+		<h2> CoWin Vaccine Availability Status </h2>
+		<div id="states"> For vaccine slot availability </div>
+		<div id="time"> Enter state name, date to check for and vaccine </div>
+		<hr>
+		<div id="sparams">
+			<table> <thead> </thead>
+			<tbody>
+			<tr>
+				<td> State </td> <td> <input type="text" name="vstate" id="vstate"> </td>
+				<td> Date </td> <td> <input type="date" name="vdate" id="vdate"> </td>
+			</tr>
+			<tr>
+				<td> Vaccine </td>
+				<td> <select name="vvac" id="vvac">
+						<option value="ANY"> ANY </option>
+						<option value="Covishield"> Covishield </option>
+						<option value="Covaxin"> Covaxin </option>
+					</select> </td>
+				<td> </td> <td> <button id="vsearch" name="vsearch"> Search </button> </td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
 		<div id="main">
 			<table id="maintbl">
 				<thead> </thead>
 				<tbody> </tbody>
 			</table>
 		</div>
-		<div id="status"> Save Nature Save Earth </div>
+		<hr>
+		<div id="bottom">
+			<p id="status"> Save Nature Save Earth </p>
+			<p> Based on CoWin PublicAPI, could be time delayed data </p>
+		</div>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				start_here();
