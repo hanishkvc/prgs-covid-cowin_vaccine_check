@@ -210,10 +210,13 @@ async function dbget_states(db, states2Get=null) {
 			db.states[state.state_id] = dbState;
 			db.states[state.state_id]['name'] = state.state_name;
 			db.states[state.state_id]['state_id'] = state.state_id;
-			if (cache_not_fresh(db, state.state_id)) continue;
-			await dbget_districts(db, state.state_id);
 			let cb = db.cb_dbgetstates_statedone;
-			if (cb !== undefined) cb(db, state.state_id);
+			if (cache_not_fresh(db, state.state_id)) {
+				if (cb !== undefined) cb(db, state.state_id, "CACHED");
+				continue;
+			}
+			await dbget_districts(db, state.state_id);
+			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
 	} catch(error) {
 		update_status(`ERRR:DbGetStates: ${error.message}`);
