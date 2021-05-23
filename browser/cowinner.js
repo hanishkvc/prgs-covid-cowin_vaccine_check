@@ -225,7 +225,7 @@ async function dbget_states(db, states2Get=null) {
 }
 
 
-function dummy_update_status(msg) { console.log("DBUG:DummyUpdateStatus:"); }
+function dummy_update_status(msg) { /*console.log("DBUG:DummyUpdateStatus:");*/ }
 if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
 
 
