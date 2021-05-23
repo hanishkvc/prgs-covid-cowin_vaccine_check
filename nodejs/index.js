@@ -44,15 +44,18 @@ function list_vaccenters(db) {
 		vacType = vacType.toUpperCase();
 		if (vacType === 'ANY') vacType = null;
 	}
-	db.states.forEach((state) => {
-		state.districts.forEach((dist) => {
-			dist.vaccenters.forEach((vc) => {
+	for(sk in db.states) {
+		state = db.states[sk];
+		for(dk in state.districts) {
+			dist = state.districts[dk];
+			for(vk in dist.vaccenters) {
+				vc = dist.vaccenters[vk];
 				if ((vacType !== null) && (vacType !== vc.vaccine.toUpperCase())) return;
 				if (vc.available_capacity === 0) return;
-				console.log(cw.vaccenter_string(state.state_id, dist.district_id, vc.center_id));
-			});
-		});
-	});
+				console.log(cw.vaccenter_string(db, state.state_id, dist.district_id, vc.center_id));
+			}
+		}
+	}
 }
 
 

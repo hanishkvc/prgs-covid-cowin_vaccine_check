@@ -41,7 +41,7 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 			if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
 			vacCenters[vc.center_id] = vc;
 			/*
-			console.log("INFO:DbGetVacCenters:", vaccenter_string(stateId, districtId, vc.center_id));
+			console.log("INFO:DbGetVacCenters:", vaccenter_string(db, stateId, districtId, vc.center_id));
 			*/
 			});
 		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
@@ -110,5 +110,5 @@ if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
 
 if (typeof(exports) === 'undefined') exports = {};
 exports.dbget_states = dbget_states;
-
+exports.vaccenter_string = vaccenter_string
 
