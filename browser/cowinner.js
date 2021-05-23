@@ -64,13 +64,11 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCs = await resp.json();
 		var vacCenters = {};
+		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 		oVCs.sessions.forEach(vc => {
 			vacCenters[vc.center_id] = vc;
-			/*
 			console.log("INFO:DbGetVacCenters:", vaccenter_string(db, stateId, districtId, vc.center_id));
-			*/
 			});
-		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 	} catch(error) {
 		console.error("ERRR:DbGetVacCenters:", error)
 		update_status(`ERRR:DbGetVacCenters: ${error.message}`);
