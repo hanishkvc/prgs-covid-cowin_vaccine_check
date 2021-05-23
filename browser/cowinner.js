@@ -30,7 +30,7 @@
 const srvr = "https://cdn-api.co-vin.in/api";
 var fetchOptions = {
 	headers: {
-		"User-Agent": "india-hkvc/20210522 node-fetch/202105"
+		"User-Agent": "india-hkvc/20210524.01 node-fetch/202105"
 		}
 	}
 
@@ -131,10 +131,12 @@ function cache_not_fresh(db, stateId) {
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
-			console.log("INFO:DbGetDistricts: Too soon for", db.states[stateId].name, deltaSecs);
+			console.log("INFO:CacheNotFresh: Too soon for", db.states[stateId].name, deltaSecs);
 			return true;
 		}
-		console.log("INFO:DbGetDistricts: Fetching fresh data for", db.states[stateId].name, deltaSecs);
+		console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name, deltaSecs);
+	} else {
+		console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
 	}
 	db.states[stateId]['time'] = curTime;
 	return false;
@@ -170,7 +172,7 @@ async function dbget_districts(db, stateId) {
  * states2Get : the list of states to get data for
  */
 async function dbget_states(db, states2Get) {
-	db['states'] = {};
+	if (db['states'] === undefined) db['states'] = {};
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
 		let data = await resp.json()
@@ -183,9 +185,12 @@ async function dbget_states(db, states2Get) {
 				return false;
 				});
 			if (stateIndex === -1) continue;
-			db.states[state.state_id] = {};
+			let dbState = db.states[state.state_id];
+			if (dbState === undefined) dbState = {};
+			db.states[state.state_id] = dbState;
 			db.states[state.state_id]['name'] = state.state_name;
 			db.states[state.state_id]['state_id'] = state.state_id;
+			if (cache_not_fresh(db, state.state_id)) continue;
 			await dbget_districts(db, state.state_id);
 		}
 	} catch(error) {

@@ -9,6 +9,7 @@ Overview
 
 General
 ==========
+
 As the govt (central) has gone for a fastest finger first get vaccination mode for citizens,
 and inturn as the specific vaccine needed is not necessarily available in many cases in
 vaccination centers even at a district level. So there is a need to get the status of vac
@@ -21,7 +22,8 @@ vaccination centers for the specified state, which have vaccines available on th
 as of the moment when this logic is run.
 
 This is a minimal keep it simple and stupid (kiss) based logic, to get the required data and
-nothing more.
+look at it in a efficient way by caching it temporarily for a short period, so as to avoid
+overloading of the server.
 
 This uses the public api provided by the govt to query the CoWin's servers.
 
@@ -36,8 +38,11 @@ aware vaccination drive, rather than the current musical chair, everyone is need
 in till one gets vaccinated.
 
 Also if the cowin site itself provides a state level view in one shot, then there would be no
-need for this program. Unless one is looking at extending it with automatic periodic check
-and notification purpose.
+need for this program, Unless one is looking at extending this with automatic periodic check
+and notification purpose. This would be especially true provided the existing cowin site caches
+the data locally on the client side, else this logic would be slightly efficient, at the expense
+of slightly stale data (but given that CoWin public api data is already time delayed potentially
+this shouldnt matter).
 
 
 Things to Note
@@ -55,10 +60,11 @@ overload it. So dont search/run the logic many times with in any 5 minute window
 server will potentially disable access to your ip for few minutes, so you wont get any data.
 After few minutes the access will be restored and you can get the data again.
 
-To help mitigate this to some extent, the logic caches data wrt any given state for upto 5 mins
-by default. So if a user tries to requery wrt the same state, it wont try to fetch the data
-from the server. However if user tries to query wrt a new state, then it will fetch fresh data,
-provided previously data had not been fetched for that state within the past 5 minutes.
+To help mitigate this to some extent, and also to be bit efficient and less loading on the server,
+the logic caches data wrt any given state for upto 5 mins by default. So if a user tries to requery
+wrt the same state, it wont try to fetch the data from the server. However if user tries to query
+wrt a new state, then it will fetch fresh data, provided previously data had not been fetched for
+that state within the past 5 minutes.
 
 
 Program Versions
