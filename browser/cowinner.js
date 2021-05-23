@@ -13,6 +13,14 @@ var fetchOptions = {
 	}
 
 
+function vaccenter_string(db, stateId, districtId, centerId) {
+	let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
+	vc = db.states[stateId].districts[districtId].vaccenters[centerId];
+	let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
+	return `${sLocation} -- ${sVC}`;
+}
+
+
 /*
  * Get Vaccine centers with required availability for the given state-district,
  * inturn for the given date.
@@ -33,9 +41,7 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 			if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
 			vacCenters[vc.center_id] = vc;
 			/*
-			let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
-			let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
-			console.log(`INFO:DbGetVacCenters: ${sLocation} -- ${sVC}`);
+			console.log("INFO:DbGetVacCenters:", vaccenter_string(stateId, districtId, vc.center_id));
 			*/
 			});
 		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
@@ -98,6 +104,11 @@ async function dbget_states(db, states2Get) {
 }
 
 
+function dummy_update_status(msg) { };
+if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
+
+
+if (typeof(exports) === 'undefined') exports = {};
 exports.dbget_states = dbget_states;
 
 
