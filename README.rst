@@ -35,20 +35,44 @@ Also if the cowin site itself provides a state level view in one shot, then ther
 need for this program. Unless one is looking at extending it with automatic periodic check
 and notification purpose.
 
+NOTE: This is a minimal keep it simple and stupid (kiss) based logic, to get the required
+data and nothing more.
+
+NOTE: The cowin servers rate limit queries into their public apis' so that people dont abuse
+it nor overload it. So dont search/run the logic many times with in any 5 minute window, else
+the cowin server will potentially disable access to your ip for few minutes, so you wont get
+any data. After few minutes the access will be restored and you can get the data again.
+
 
 Browser based
 =================
 
+This uses html and client side javascript to query the cowin servers and show the list of
+vaccine centers if any with slot availability.
+
 Multifile version
 ---------------------
+
+NOTE: This is a syncronised serialised version, so it takes more time to show the results
+of the search.
+
+From your local machine
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 User needs to download the html file and the related javascript files into a folder locally
 on their machine and then User needs to load the index.html page provided by this logic.
 Inturn it will list the vac centers where vaccines are available, for the specified state
 and date.
 
-NOTE: This is a syncronised serialised version, so it takes more time to show the results
-of the search.
+Directly from github
+~~~~~~~~~~~~~~~~~~~~~~
+
+Access the following url to run the logic directly from the server
+
+https://hanishkvc.github.io/prgs-covid-cowin_vaccine_check/browser/
+
+NOTE: The logic is implemented using client side javascript, so it will run from your
+browser. The github site is only used to serve the html and related javascript files.
 
 
 Single file version
