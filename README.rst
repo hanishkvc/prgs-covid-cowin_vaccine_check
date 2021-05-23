@@ -86,6 +86,10 @@ Modular Multifile version
 User can enter the name of the state they want to search for, the vaccine they want, along
 with the date for which they want to check vaccine slot availability.
 
+The user can either enter the state name on their own and or chose from one of the names in
+the predefined set. Wrt date again either they can directly enter or use the calender that
+will come up. While wrt vaccine, they have to select one from the predefined set.
+
 NOTE: This is a syncronised serialised version, so it takes some time to show the results
 of the search.
 
@@ -108,8 +112,8 @@ NOTE: The logic is implemented using client side javascript, so it will run from
 browser. The github site is only used to serve the html and related javascript files.
 
 
-Single file version
----------------------
+Single file version (old)
+--------------------------
 
 There is also a single file (i.e both html and js in a single file) version, which should allow
 a user using mobile to download this single file and then run locally from the mobile.
