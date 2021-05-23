@@ -2,7 +2,7 @@
 CoWin Vaccine Availability Status Check
 ##########################################
 Author: HanishKVC
-Version: v20210522IST1849
+Version: v20210523IST1925
 
 Overview
 ##########
@@ -90,7 +90,7 @@ a user using mobile to download this single file and then run locally from the m
 The user can enter the state and the date for which they want to check availability for.
 
 NOTE: This is a asyncronous parallel version, so the search results appear, as they become
-available, on the screen.
+available, on the screen. However this has not been updated wrt some of the new logics/flows/etc.
 
 
 NodeJS based

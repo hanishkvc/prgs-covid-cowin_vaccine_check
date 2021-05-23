@@ -48,16 +48,11 @@ function update_status(msg) {
 
 function show_vcs(el, db) {
 	tbl_append(el, [ "Vaccine", "Dose1", "Dose2", "Name", "Pincode", "Dist", "State", "Age" ], "thead");
-	for(stateK in db.states) {
-		let state = db.states[stateK];
-		for(distK in state.districts) {
-			let dist = state.districts[distK];
-			for(vcK in dist.vaccenters) {
-				let vc = dist.vaccenters[vcK];
-				tbl_append(el, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+` ]);
-			}
-		}
-	}
+	dblookup_vaccenters(db, function(db, sk, dk, vc) {
+		state = db.states[sk];
+		dist = state.districts[dk];
+		tbl_append(el, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+` ]);
+		});
 }
 
 

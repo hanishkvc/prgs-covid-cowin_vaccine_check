@@ -63,7 +63,7 @@ function vaccenter_string_ex(db, stateId, districtId, vcenterId, vcInstanceId) {
  * 	if ANY/null/undefined all vaccine types will be selected.
  * The callback will be called for any valid vaccenters'.
  *	passAlong will be passed to the callback.
- *	Args: stateId, districtId, vaccenterInstance, passAlong
+ *	Args: db, stateId, districtId, vaccenterInstance, passAlong
  */
 function dblookup_vaccenters(db, callback, passAlong=null) {
 	let vacType = db.vaccine;
