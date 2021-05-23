@@ -202,13 +202,13 @@ async function dbget_states(db, states2Get) {
 			await dbget_districts(db, state.state_id);
 		}
 	} catch(error) {
-		console.error("ERRR:DbGetStates:", error)
 		update_status(`ERRR:DbGetStates: ${error.message}`);
+		console.error("ERRR:DbGetStates:", error)
 	}
 }
 
 
-function dummy_update_status(msg) { };
+function dummy_update_status(msg) { console.log("DBUG:DummyUpdateStatus:"); }
 if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
 
 
