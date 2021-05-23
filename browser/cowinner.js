@@ -116,7 +116,7 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
 		oVCInsts.sessions.forEach(vcInst => {
 			_add2vaccenter(vacCenters, vcInst);
-			console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
+			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
 		console.error("ERRR:DbGetVacCenters:", error)
@@ -125,17 +125,23 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 }
 
 
-async function dbget_districts(db, stateId) {
+function cache_not_fresh(db, stateId) {
 	var prevTime = db.states[stateId].time;
 	var curTime = Date.now()
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
 			console.log("INFO:DbGetDistricts: Too soon for", db.states[stateId].name, deltaSecs);
-			return;
+			return true;
 		}
+		console.log("INFO:DbGetDistricts: Fetching fresh data for", db.states[stateId].name, deltaSecs);
 	}
 	db.states[stateId]['time'] = curTime;
+	return false;
+}
+
+
+async function dbget_districts(db, stateId) {
 	db.states[stateId]['districts'] = {};
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)

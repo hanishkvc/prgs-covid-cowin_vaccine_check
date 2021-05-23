@@ -14,6 +14,7 @@ var elStatus = document.getElementById("status");
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 var gVac = "ANY";
+var db = null;
 
 
 function div_append(el, text) {
@@ -69,7 +70,8 @@ function search_clicked(ev) {
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
 	tbl_clear(elMainTbl, 1);
-	db = { 'date': gDate, 'vaccine': gVac };
+	db['date'] = gDate;
+	db['vaccine'] = gVac;
 	dbget_states(db, gStates)
 		.then(() => {
 			show_vcs(elMainTbl, db);
@@ -80,6 +82,7 @@ function search_clicked(ev) {
 
 function start_here() {
 	console.log("INFO:StartHere:...");
+	db = {};
 	elSearch.onclick = search_clicked;
 }
 
