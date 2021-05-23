@@ -7,6 +7,8 @@ Version: v20210523IST1925
 Overview
 ##########
 
+General
+==========
 As the govt (central) has gone for a fastest finger first get vaccination mode for citizens,
 and inturn as the specific vaccine needed is not necessarily available in many cases in
 vaccination centers even at a district level. So there is a need to get the status of vac
@@ -26,10 +28,6 @@ This uses the public api provided by the govt to query the CoWin's servers.
 The same vaccination center may appear more than once in the search results, as it could be
 providing same or different vaccines to different age groups at the same time.
 
-NOTE: As the Availability data provided by the CoWin Public API could be upto 30 minutes old,
-so there is a possibility that even thou this shows that vaccine/slotForVaccination is available
-at a given place, in reality it might have been already booked by someone.
-
 THis can be run by anyone on their own computer, thus not needing to share any of their details
 with any 3rd party.
 
@@ -41,10 +39,26 @@ Also if the cowin site itself provides a state level view in one shot, then ther
 need for this program. Unless one is looking at extending it with automatic periodic check
 and notification purpose.
 
-NOTE: The cowin servers rate limit queries into their public apis' so that people dont abuse
-it nor overload it. So dont search/run the logic many times with in any 5 minute window, else
-the cowin server will potentially disable access to your ip for few minutes, so you wont get
-any data. After few minutes the access will be restored and you can get the data again.
+
+Things to Note
+================
+
+As the availability data provided by the CoWin Public API could be upto 30 minutes (or as decided
+by cowin/govt team) old, so there is a possibility that even thou this shows that vaccination slot
+is available at a given place, in reality it might have been already booked by someone.
+
+One requires to go to the cowin site to cross verify the latest status as well as to book the
+slot. This program mainly helps with getting availability status wrt a full state in one shot.
+
+The cowin servers rate limit queries into their public apis' so that people dont abuse it nor
+overload it. So dont search/run the logic many times with in any 5 minute window, else the cowin
+server will potentially disable access to your ip for few minutes, so you wont get any data.
+After few minutes the access will be restored and you can get the data again.
+
+To help mitigate this to some extent, the logic caches data wrt any given state for upto 5 mins
+by default. So if a user tries to requery wrt the same state, it wont try to fetch the data
+from the server. However if user tries to query wrt a new state, then it will fetch fresh data,
+provided previously data had not been fetched for that state within the past 5 minutes.
 
 
 Program Versions

@@ -126,6 +126,16 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 
 async function dbget_districts(db, stateId) {
+	var prevTime = db.states[stateId].time;
+	var curTime = Date.now()
+	if (prevTime !== undefined) {
+		deltaSecs = (curTime - prevTime)/1000
+		if (deltaSecs < 300) {
+			console.log("INFO:DbGetDistricts: Too soon for", db.states[stateId].name, deltaSecs);
+			return;
+		}
+	}
+	db.states[stateId]['time'] = curTime;
 	db.states[stateId]['districts'] = {};
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
