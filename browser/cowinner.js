@@ -30,9 +30,8 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 		var vacCenters = {};
 		oVCs.sessions.forEach(vc => {
 			if (vc.available_capacity === 0) return;
-			//if ((vacType !== undefined) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
 			if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
-			vacCenters[vc.name] = vc;
+			vacCenters[vc.center_id] = vc;
 			let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
 			let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
 			console.log(`INFO:DbGetVacCenters: ${sLocation} -- ${sVC}`);
