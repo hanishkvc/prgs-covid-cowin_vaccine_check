@@ -127,7 +127,14 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 function cache_not_fresh(db, stateId) {
 	var prevTime = db.states[stateId].time;
+	var prevDate = db.states[stateId].date;
 	var curTime = Date.now()
+	if ((prevDate !== undefined) && (prevDate != db.date)) {
+		console.log("INFO:CacheNotFresh: Fetching bcas different date for", db.states[stateId].name);
+		db.states[stateId]['time'] = curTime;
+		db.states[stateId]['date'] = db.date;
+		return false;
+	}
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
@@ -139,6 +146,7 @@ function cache_not_fresh(db, stateId) {
 		console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
 	}
 	db.states[stateId]['time'] = curTime;
+	db.states[stateId]['date'] = db.date;
 	return false;
 }
 
