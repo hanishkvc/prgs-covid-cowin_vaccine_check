@@ -5,7 +5,7 @@
  */
 
 
-var elMain = document.getElementById("main");
+var elMainTbl = document.getElementById("maintbl");
 var elState = document.getElementById("vstate");
 var elDate = document.getElementById("vdate");
 var elSearch = document.getElementById("vsearch");
@@ -21,6 +21,24 @@ function div_append(el, text) {
 }
 
 
+function tbl_clear(el) {
+	let tB = document.getElementsByTagName("tbody")[0];
+	tB.innerHTML = "";
+}
+
+
+function tbl_append(el, datas) {
+	let tB = document.getElementsByTagName("tbody")[0];
+	let tR = document.createElement("tr");
+	datas.forEach((data) => {
+		let tD = document.createElement("td");
+		tD.textContent = data;
+		tR.appendChild(tD);
+	});
+	tB.appendChild(tR);
+}
+
+
 function update_status(msg) {
 	elStatus.innerHTML = msg;
 }
@@ -33,7 +51,7 @@ function show_vcs(el, db) {
 			let dist = state.districts[distK];
 			for(vcK in dist.vaccenters) {
 				let vc = dist.vaccenters[vcK];
-				div_append(el, `>>> ${vc.vaccine} ${vc.available_capacity} [${vc.name}, ${vc.pincode}, ${dist.name}, ${state.name}] for ${vc.min_age_limit}+`);
+				tbl_append(el, [ vc.vaccine, vc.available_capacity, vc.name, vc.pincode, dist.name, state.name, vc.min_age_limit ]);
 			}
 		}
 	}
@@ -49,11 +67,11 @@ function search_clicked(ev) {
 	tP.textContent = `Availability status queried at ${Date()}`;
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
-	elMain.innerHTML = "";
+	tbl_clear(elMainTbl);
 	db = { 'date': gDate };
 	dbget_states(db, gStates)
 		.then(() => {
-			show_vcs(elMain, db);
+			show_vcs(elMainTbl, db);
 			update_status("Done");
 		});
 }
