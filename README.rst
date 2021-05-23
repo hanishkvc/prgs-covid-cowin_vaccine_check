@@ -66,6 +66,10 @@ wrt the same state, it wont try to fetch the data from the server. However if us
 wrt a new state, then it will fetch fresh data, provided previously data had not been fetched for
 that state within the past 5 minutes.
 
+NOTE: The local temporary caching is mainly useful for the modular browser based version of this
+logic. The NodeJS based version currently cant make use of this caching capability, as it exits
+after each search run.
+
 
 Program Versions
 ##################
@@ -76,8 +80,8 @@ Browser based
 This uses html and client side javascript to query the cowin servers and show the list of
 vaccine centers if any with slot availability.
 
-Multifile version
----------------------
+Modular Multifile version
+--------------------------
 
 User can enter the name of the state they want to search for, the vaccine they want, along
 with the date for which they want to check vaccine slot availability.
