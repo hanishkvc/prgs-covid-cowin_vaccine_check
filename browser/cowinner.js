@@ -23,23 +23,48 @@ function vaccenter_string(db, stateId, districtId, centerId) {
 
 
 /*
- * Get Vaccine centers with required availability for the given state-district,
- * inturn for the given date.
+ * Look at vaccine centers with vaccine availability in the given db.
+ * db.vaccine
+ * 	if defined, then return vaccenter's which have that vaccine.
+ * 	if ANY/null/undefined all vaccine types will be selected.
+ * The callback will be called for any valid vaccenters'.
+ *	passAlong will be passed to the callback.
+ *	Args: stateId, districtId, vaccenterId, passAlong
+ */
+function dblookup_vaccenters(db, callback, passAlong=null) {
+	let vacType = db.vaccine;
+	if (vacType === undefined) {
+		vacType = null;
+	} else if (vacType !== null) {
+		vacType = vacType.toUpperCase();
+		if (vacType === 'ANY') vacType = null;
+	}
+	for(sk in db.states) {
+		state = db.states[sk];
+		for(dk in state.districts) {
+			dist = state.districts[dk];
+			for(vk in dist.vaccenters) {
+				vc = dist.vaccenters[vk];
+				if ((vacType !== null) && (vacType !== vc.vaccine.toUpperCase())) continue;
+				if (vc.available_capacity === 0) continue;
+				callback(db, sk, dk, vk, passAlong);
+			}
+		}
+	}
+}
+
+
+/*
+ * Get all vaccine centers for the given state-district, inturn for the given date.
  * date arg or db['date'] : the date for which vaccine centers should be looked up.
- * db['vaccine'] : the vaccine one is interested in. If not specified, all vaccine
- * 	types will be selected.
  */
 async function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
-	var vacType = db['vaccine'];
-	if (vacType === undefined) vacType = null;
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCs = await resp.json();
 		var vacCenters = {};
 		oVCs.sessions.forEach(vc => {
-			if (vc.available_capacity === 0) return;
-			if ((vacType !== null) && (vc.vaccine.toUpperCase() !== vacType.toUpperCase())) return;
 			vacCenters[vc.center_id] = vc;
 			/*
 			console.log("INFO:DbGetVacCenters:", vaccenter_string(db, stateId, districtId, vc.center_id));
@@ -113,5 +138,6 @@ if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
 
 if (typeof(exports) === 'undefined') exports = {};
 exports.dbget_states = dbget_states;
-exports.vaccenter_string = vaccenter_string
+exports.vaccenter_string = vaccenter_string;
+exports.dblookup_vaccenters = dblookup_vaccenters;
 

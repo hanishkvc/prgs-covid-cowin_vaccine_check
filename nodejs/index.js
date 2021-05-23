@@ -36,33 +36,18 @@ function handle_args(cmdArgs) {
 }
 
 
-function list_vaccenters(db) {
-	let vacType = db.vaccine;
-	if (vacType === undefined) {
-		vacType = null;
-	} else if (vacType !== null) {
-		vacType = vacType.toUpperCase();
-		if (vacType === 'ANY') vacType = null;
-	}
-	for(sk in db.states) {
-		state = db.states[sk];
-		for(dk in state.districts) {
-			dist = state.districts[dk];
-			for(vk in dist.vaccenters) {
-				vc = dist.vaccenters[vk];
-				if ((vacType !== null) && (vacType !== vc.vaccine.toUpperCase())) return;
-				if (vc.available_capacity === 0) return;
-				console.log(cw.vaccenter_string(db, state.state_id, dist.district_id, vc.center_id));
-			}
-		}
-	}
+function handle_vaccenter(db, sk, dk, vk, passedAlong) {
+	state = db.states[sk];
+	dist = state.districts[dk];
+	vc = dist.vaccenters[vk];
+	console.log(cw.vaccenter_string(db, state.state_id, dist.district_id, vc.center_id));
 }
 
 
 handle_args(process.argv.slice(2));
 var db = { 'date': gDate, 'vaccine': gVaccine };
 cw.dbget_states(db, [ gState ]).then(() => {
-	list_vaccenters(db);
+	cw.dblookup_vaccenters(db, handle_vaccenter);
 	console.log("INFO: Done");
 	});
 
