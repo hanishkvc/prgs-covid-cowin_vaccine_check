@@ -18,7 +18,13 @@ So this simple program has been created to try and help with the same. It return
 vaccination centers for the specified state, which have vaccines available on the given date,
 as of the moment when this logic is run.
 
+This is a minimal keep it simple and stupid (kiss) based logic, to get the required data and
+nothing more.
+
 This uses the public api provided by the govt to query the CoWin's servers.
+
+The same vaccination center may appear more than once in the search results, as it could be
+providing same or different vaccines to different age groups at the same time.
 
 NOTE: As the Availability data provided by the CoWin Public API could be upto 30 minutes old,
 so there is a possibility that even thou this shows that vaccine/slotForVaccination is available
@@ -35,14 +41,14 @@ Also if the cowin site itself provides a state level view in one shot, then ther
 need for this program. Unless one is looking at extending it with automatic periodic check
 and notification purpose.
 
-NOTE: This is a minimal keep it simple and stupid (kiss) based logic, to get the required
-data and nothing more.
-
 NOTE: The cowin servers rate limit queries into their public apis' so that people dont abuse
 it nor overload it. So dont search/run the logic many times with in any 5 minute window, else
 the cowin server will potentially disable access to your ip for few minutes, so you wont get
 any data. After few minutes the access will be restored and you can get the data again.
 
+
+Program Versions
+##################
 
 Browser based
 =================

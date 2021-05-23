@@ -36,11 +36,10 @@ function handle_args(cmdArgs) {
 }
 
 
-function handle_vaccenter(db, sk, dk, vk, passedAlong) {
+function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 	state = db.states[sk];
 	dist = state.districts[dk];
-	vc = dist.vaccenters[vk];
-	console.log(cw.vaccenter_string(db, state.state_id, dist.district_id, vc.center_id));
+	console.log(cw.vaccenter_string(vcInst, state.name, dist.name));
 }
 
 

@@ -5,6 +5,28 @@
  */
 
 
+/*
+ * The db schema
+ * 	states (bunch of state objects)
+ * 		state_id
+ * 		name
+ * 		districts (bunch of district objects)
+ * 			district_id
+ * 			name
+ * 			vaccenters (bunch of vaccine center objects)
+ * 				vaccenterInstances (kind of array of same vaccine center instances)
+ * 					center_id
+ * 					name
+ * 					available_capacity
+ * 					...
+ * 					NOTE: As each vaccine center could provide different vaccines
+ * 					to different age group people, so each such unique combination
+ * 					will be treated as a vcInstance.
+ * 						Ex: VC1_45+_Covishield, VC1_18+_Covishield, VC1_45+_Covaxin, ...
+ *
+ */
+
+
 const srvr = "https://cdn-api.co-vin.in/api";
 var fetchOptions = {
 	headers: {
@@ -13,12 +35,24 @@ var fetchOptions = {
 	}
 
 
-function vaccenter_string(db, stateId, districtId, centerId) {
-	//console.log("INFO:VacCenterString:", stateId, districtId, centerId);
-	let sLocation = `${db.states[stateId].name} ${db.states[stateId].districts[districtId].name}`;
-	vc = db.states[stateId].districts[districtId].vaccenters[centerId];
+/*
+ * Convert the given vaccine center instance into a string
+ * containing useful info about the same, along with the state-dist
+ */
+function vaccenter_string(vc, stateName, districtName) {
+	let sLocation = `${stateName} ${districtName}`;
 	let sVC = `${vc.vaccine} ${vc.available_capacity} -- ${vc.name} ${vc.pincode} -- ${vc.min_age_limit}+`;
 	return `${sLocation} -- ${sVC}`;
+}
+
+
+function vaccenter_string_ex(db, stateId, districtId, vcenterId, vcInstanceId) {
+	//console.log("INFO:VacCenterString:", stateId, districtId, vcenterId, vcInstanceId);
+	let stateN = db.states[stateId].name;
+	let distN = db.states[stateId].districts[districtId].name;
+	let vc = db.states[stateId].districts[districtId].vaccenters[vcenterId];
+	vcInst = vc[vcInstanceId];
+	return vaccenter_string(vcInst, stateN, distN);
 }
 
 
@@ -29,7 +63,7 @@ function vaccenter_string(db, stateId, districtId, centerId) {
  * 	if ANY/null/undefined all vaccine types will be selected.
  * The callback will be called for any valid vaccenters'.
  *	passAlong will be passed to the callback.
- *	Args: stateId, districtId, vaccenterId, passAlong
+ *	Args: stateId, districtId, vaccenterInstance, passAlong
  */
 function dblookup_vaccenters(db, callback, passAlong=null) {
 	let vacType = db.vaccine;
@@ -40,17 +74,32 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 		if (vacType === 'ANY') vacType = null;
 	}
 	for(sk in db.states) {
-		state = db.states[sk];
+		let state = db.states[sk];
 		for(dk in state.districts) {
-			dist = state.districts[dk];
+			let dist = state.districts[dk];
 			for(vk in dist.vaccenters) {
-				vc = dist.vaccenters[vk];
-				if ((vacType !== null) && (vacType !== vc.vaccine.toUpperCase())) continue;
-				if (vc.available_capacity === 0) continue;
-				callback(db, sk, dk, vk, passAlong);
+				let vc = dist.vaccenters[vk];
+				//console.log(vc);
+				for(ik in vc) {
+					vcInst = vc[ik];
+					if ((vacType !== null) && (vacType !== vcInst.vaccine.toUpperCase())) continue;
+					if (vcInst.available_capacity === 0) continue;
+					callback(db, sk, dk, vcInst, passAlong);
+				}
 			}
 		}
 	}
+}
+
+
+function _add2vaccenter(oVCs, vcInst) {
+	var vc = oVCs[vcInst.center_id];
+	if (vc === undefined) {
+		vc = new Array();
+		oVCs[vcInst.center_id] = vc;
+	}
+	vc.push(vcInst);
+	return vc.length-1;
 }
 
 
@@ -62,12 +111,12 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
-		let oVCs = await resp.json();
+		let oVCInsts = await resp.json();
 		var vacCenters = {};
 		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
-		oVCs.sessions.forEach(vc => {
-			vacCenters[vc.center_id] = vc;
-			console.log("INFO:DbGetVacCenters:", vaccenter_string(db, stateId, districtId, vc.center_id));
+		oVCInsts.sessions.forEach(vcInst => {
+			_add2vaccenter(vacCenters, vcInst);
+			console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
 		console.error("ERRR:DbGetVacCenters:", error)
@@ -137,5 +186,6 @@ if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
 if (typeof(exports) === 'undefined') exports = {};
 exports.dbget_states = dbget_states;
 exports.vaccenter_string = vaccenter_string;
+exports.vaccenter_string_ex = vaccenter_string_ex;
 exports.dblookup_vaccenters = dblookup_vaccenters;
 
