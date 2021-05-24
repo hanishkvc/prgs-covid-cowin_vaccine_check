@@ -134,7 +134,8 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 
 function cache_not_fresh(db, stateId) {
-	var prevTime = db.states[stateId][db.date].time;
+	var prevTime = db.states[stateId][db.date]
+	if (prevTime !== undefined) prevTime = prevTime.time;
 	var curTime = Date.now()
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
@@ -153,13 +154,13 @@ function cache_not_fresh(db, stateId) {
 
 
 async function dbget_districts(db, stateId) {
-	db.states[stateId]['districts'] = {};
+	if (db.states[stateId]['districts'] === undefined) db.states[stateId]['districts'] = {};
 	try {
 		let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
 		let oDists = await resp.json()
 		for(distK in oDists.districts) {
 			let dist = oDists.districts[distK];
-			db.states[stateId].districts[dist.district_id] = {};
+			if (db.states[stateId].districts[dist.district_id] === undefined) db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 			db.states[stateId].districts[dist.district_id]['district_id'] = dist.district_id;
 			console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);

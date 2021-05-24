@@ -137,3 +137,28 @@ If date is not specified, then the current date is used.
 If vaccine is not specified, get vac centers for all vaccines available on the specified date.
 
 
+ChangeLog
+############
+
+This contains only some of the changes/updates
+
+vInitialExtRelease
+====================
+
+Browser and NodeJS based versions of the logic, which allow a user to select the state, date and
+vaccine and inturn check if there are slots available in any vac centers.
+
+The logic caches the last set of vaccenters wrt any given state, so that filtering wrt vaccine
+or any other parameter in future, and or switching between states doesnt need refetching the
+same data from server.
+
+
+v20210524IST1724
+=================
+
+Allow caching of vac centers details wrt multiple dates for any state, in the db.
+So user could either look at different dates for a given state, or look across multiple states
+and or any combination of these and the logic will make use of its temp cache logic to handle
+this use case with minimal server loading.
+
+
