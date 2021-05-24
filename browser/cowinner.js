@@ -50,7 +50,7 @@ function vaccenter_string_ex(db, stateId, districtId, vcenterId, vcInstanceId) {
 	//console.log("INFO:VacCenterString:", stateId, districtId, vcenterId, vcInstanceId);
 	let stateN = db.states[stateId].name;
 	let distN = db.states[stateId].districts[districtId].name;
-	let vc = db.states[stateId].districts[districtId].vaccenters[vcenterId];
+	let vc = db.states[stateId].districts[districtId][db.date].vaccenters[vcenterId];
 	vcInst = vc[vcInstanceId];
 	return vaccenter_string(vcInst, stateN, distN);
 }
@@ -84,8 +84,8 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 		if (stateIndex === -1) continue;
 		for(dk in state.districts) {
 			let dist = state.districts[dk];
-			for(vk in dist.vaccenters) {
-				let vc = dist.vaccenters[vk];
+			for(vk in dist[db.date].vaccenters) {
+				let vc = dist[db.date].vaccenters[vk];
 				//console.log(vc);
 				for(ik in vc) {
 					vcInst = vc[ik];
@@ -120,7 +120,8 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
 		var vacCenters = {};
-		db.states[stateId].districts[districtId]['vaccenters'] = vacCenters;
+		db.states[stateId].districts[districtId][date] = {}
+		db.states[stateId].districts[districtId][date]['vaccenters'] = vacCenters;
 		oVCInsts.sessions.forEach(vcInst => {
 			_add2vaccenter(vacCenters, vcInst);
 			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
@@ -133,15 +134,8 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 
 
 function cache_not_fresh(db, stateId) {
-	var prevTime = db.states[stateId].time;
-	var prevDate = db.states[stateId].date;
+	var prevTime = db.states[stateId][db.date].time;
 	var curTime = Date.now()
-	if ((prevDate !== undefined) && (prevDate != db.date)) {
-		console.log("INFO:CacheNotFresh: Fetching bcas different date for", db.states[stateId].name);
-		db.states[stateId]['time'] = curTime;
-		db.states[stateId]['date'] = db.date;
-		return false;
-	}
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
@@ -152,8 +146,8 @@ function cache_not_fresh(db, stateId) {
 	} else {
 		console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
 	}
-	db.states[stateId]['time'] = curTime;
-	db.states[stateId]['date'] = db.date;
+	db.states[stateId][db.date] = {}
+	db.states[stateId][db.date]['time'] = curTime;
 	return false;
 }
 
