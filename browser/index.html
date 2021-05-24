@@ -3,16 +3,20 @@
 		<title> CoWin Vaccine Availability Status </title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
+			#top h2 { border: 1px solid #333; box-shadow: 4px 4px 2px #444; padding 8px 12px; }
 			table { border: 1px solid #333; }
 			td { border: 1px solid #A0A0A0; padding: 4px; }
+			.inlinebtn { display: inline; }
 		</style>
 		<script defer src="main.js"></script>
 		<script defer src="cowinner.js"></script>
 	</head>
 	<body>
-		<h2> CoWin Vaccine Availability Status </h2>
-		<div id="states"> For vaccine slot availability </div>
-		<div id="time"> Enter state name, date to check for and vaccine </div>
+		<div id="top">
+			<h2> CoWin Vaccine Availability Status </h2>
+			<div id="states"> For vaccine slot availability </div>
+			<div id="time"> Enter state name, date to check for and vaccine </div>
+		</div>
 		<hr>
 		<div id="sparams">
 			<datalist id="states-list">
@@ -69,8 +73,8 @@
 					</select> </td>
 				<td> </td>
 				<td>
-					<button id="vsearch" name="vsearch"> Search </button>
-					<button id="vauto" name="vauto"> Start Auto </button>
+					<button id="vsearch" name="vsearch" class="inlinebtn"> Search </button>
+					<button id="vauto" name="vauto" class="inlinebtn"> Start Auto </button>
 				</td>
 			</tr>
 			</tbody>
