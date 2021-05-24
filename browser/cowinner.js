@@ -30,7 +30,7 @@
 const srvr = "https://cdn-api.co-vin.in/api";
 var fetchOptions = {
 	headers: {
-		"User-Agent": "india-hkvc/20210524.17 node-fetch/202105"
+		"User-Agent": "india-hkvc/20210524.23 node-fetch/202105"
 		}
 	}
 

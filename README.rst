@@ -162,3 +162,10 @@ and or any combination of these and the logic will make use of its temp cache lo
 this use case with minimal server loading.
 
 
+v20210524IST2303
+=================
+
+Allow user to trigger a auto periodic repeating search. However if there are any changes to the
+search result, user will have to monitor it manually and act on it. The logic wont alert the
+user or so.
+

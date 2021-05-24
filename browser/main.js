@@ -101,13 +101,13 @@ function search_clicked(ev) {
 
 function auto_clicked(ev) {
 	if (gAutoId) {
-		update_status("Stopped auto run");
+		update_status("Stopped auto repeating search");
 		clearInterval(gAutoId);
 		gAutoId = 0;
 		elAuto.textContent = "Start Auto";
 	} else {
 		get_searchparams();
-		update_status("Started auto run");
+		update_status("Started auto repeating search");
 		gAutoId = setInterval(do_search, 10*60*1000);
 		elAuto.textContent = "Stop Auto";
 	}
