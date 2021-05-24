@@ -79,17 +79,22 @@ function do_search() {
 }
 
 
-function search_clicked(ev) {
+function get_searchparams() {
 	gStates = [ elState.value ];
 	tDate = elDate.value.split('-');
 	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
 	gVac = elVac.value;
-	console.log("INFO:SearchClicked:", gStates, gDate);
+	console.log("INFO:SearchParams:", gStates, gDate, gVac);
 	tP = document.getElementById("states");
 	tP.textContent = `Showing data for selected states: ${gStates}`;
 	db['date'] = gDate;
 	db['vaccine'] = gVac;
 	db['s_states'] = gStates;
+}
+
+
+function search_clicked(ev) {
+	get_searchparams();
 	do_search();
 }
 
@@ -101,6 +106,7 @@ function auto_clicked(ev) {
 		gAutoId = 0;
 		elAuto.textContent = "Start Auto";
 	} else {
+		get_searchparams();
 		update_status("Started auto run");
 		gAutoId = setInterval(do_search, 10*60*1000);
 		elAuto.textContent = "Stop Auto";
