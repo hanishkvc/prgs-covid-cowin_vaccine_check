@@ -100,6 +100,7 @@ function search_clicked(ev) {
 
 
 function auto_clicked(ev) {
+	search_clicked(ev); // ev will be wrong, but is fine for now.
 	if (gAutoId) {
 		update_status("Stopped auto repeating search");
 		clearInterval(gAutoId);
