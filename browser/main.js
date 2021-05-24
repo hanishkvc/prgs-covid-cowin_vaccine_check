@@ -9,12 +9,14 @@ var elMainTbl = document.getElementById("maintbl");
 var elState = document.getElementById("vstate");
 var elDate = document.getElementById("vdate");
 var elSearch = document.getElementById("vsearch");
+var elAuto = document.getElementById("vauto");
 var elVac = document.getElementById("vvac");
 var elStatus = document.getElementById("status");
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 var gVac = "ANY";
 var db = null;
+var gAutoId = 0;
 
 
 function div_append(el, text) {
@@ -66,18 +68,9 @@ function handle_statedone(db, stateId, type) {
 }
 
 
-function search_clicked(ev) {
-	gStates = [ elState.value ];
-	tDate = elDate.value.split('-');
-	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
-	gVac = elVac.value;
-	console.log("INFO:SearchClicked:", gStates, gDate);
-	tP = document.getElementById("states");
-	tP.textContent = `Showing data for selected states: ${gStates}`;
+function do_search() {
+	update_status("Search started...");
 	tbl_clear(elMainTbl, 1);
-	db['date'] = gDate;
-	db['vaccine'] = gVac;
-	db['s_states'] = gStates;
 	dbget_states(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
@@ -86,11 +79,41 @@ function search_clicked(ev) {
 }
 
 
+function search_clicked(ev) {
+	gStates = [ elState.value ];
+	tDate = elDate.value.split('-');
+	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
+	gVac = elVac.value;
+	console.log("INFO:SearchClicked:", gStates, gDate);
+	tP = document.getElementById("states");
+	tP.textContent = `Showing data for selected states: ${gStates}`;
+	db['date'] = gDate;
+	db['vaccine'] = gVac;
+	db['s_states'] = gStates;
+	do_search();
+}
+
+
+function auto_clicked(ev) {
+	if (gAutoId) {
+		update_status("Stopped auto run");
+		clearInterval(gAutoId);
+		gAutoId = 0;
+		elAuto.textContent = "Start Auto";
+	} else {
+		update_status("Started auto run");
+		gAutoId = setInterval(do_search, 10*60*1000);
+		elAuto.textContent = "Stop Auto";
+	}
+}
+
+
 function start_here() {
 	console.log("INFO:StartHere:...");
 	db = {};
 	db['cb_dbgetstates_statedone'] = handle_statedone;
 	elSearch.onclick = search_clicked;
+	elAuto.onclick = auto_clicked;
 }
 
 
