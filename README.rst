@@ -34,8 +34,8 @@ THis can be run by anyone on their own computer, thus not needing to share any o
 with any 3rd party.
 
 At the same time, I would request the central govt to go for a more structured phase wise, dose
-aware vaccination drive, rather than the current musical chair, everyone is needed to participate
-in till one gets vaccinated.
+aware vaccination drive, rather than the current musical chair, that the unconnected commoners
+are needed to participate in currently, till one gets vaccinated.
 
 Also if the cowin site itself provides a state level view in one shot, then there would be no
 need for this program, Unless one is looking at extending this with automatic periodic check
@@ -70,6 +70,11 @@ NOTE: The local temporary caching is mainly useful for the modular browser based
 logic. The NodeJS based version currently cant make use of this caching capability, as it exits
 after each search run.
 
+Chances are the periodic auto repeating search supported by the modular browser based version of
+the program will trigger the search only when the user is actively using the system and inturn
+potentially the browser. Else the browser may decide to pause/stop such background logics on its
+own to avoid overloading the local system or so.
+
 
 Program Versions
 ##################
@@ -92,6 +97,14 @@ will come up. While wrt vaccine, they have to select one from the predefined set
 
 NOTE: This is a syncronised serialised version, so it takes some time to show the results
 of the search.
+
+There is also a periodic auto repeating search option, which will trigger the querying of
+the cowin server periodically without user requiring to explicitly press the search button
+each time. This is currently setup to do the periodic search once every 10 minutes. However
+do note that this logic just updates the result shown on screen, the user needs to monitor
+the same and act on it as they see fit. Also this auto repeat logic may get paused by the
+browser, as noted previously.
+
 
 From your local machine
 ~~~~~~~~~~~~~~~~~~~~~~~~~
