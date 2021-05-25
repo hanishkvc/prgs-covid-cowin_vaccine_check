@@ -109,7 +109,7 @@ function auto_clicked(ev) {
 	} else {
 		get_searchparams();
 		update_status("Started auto repeating search");
-		gAutoId = setInterval(do_search, 10*60*1000);
+		gAutoId = setInterval(search_clicked, 10*60*1000, null);
 		elAuto.textContent = "Stop Auto";
 	}
 }
