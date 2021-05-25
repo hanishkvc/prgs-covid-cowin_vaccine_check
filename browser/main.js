@@ -12,6 +12,8 @@ var elSearch = document.getElementById("vsearch");
 var elAuto = document.getElementById("vauto");
 var elVac = document.getElementById("vvac");
 var elStatus = document.getElementById("status");
+var elStatusAlert = document.getElementById("statusalert");
+var ghErrorStatus = elStatusAlert
 var gDate = "22-05-2021";
 var gStates = [ "KERALA", "KARNATAKA" ];
 var gVac = "ANY";
@@ -46,8 +48,8 @@ function tbl_append(el, index, datas, part="tbody") {
 }
 
 
-function update_status(msg) {
-	elStatus.innerHTML = msg;
+function update_status(msg, el=elStatus) {
+	el.innerHTML = msg;
 }
 
 
@@ -70,6 +72,7 @@ function handle_statedone(db, stateId, type) {
 
 function do_search() {
 	update_status("Search started...");
+	update_status("Vasudhaiva Kutumbakam", elStatusAlert);
 	tbl_clear(elMainTbl, 1);
 	dbget_states(db)
 		.then(() => {

@@ -128,7 +128,7 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 			});
 	} catch(error) {
 		console.error("ERRR:DbGetVacCenters:", error)
-		update_status(`ERRR:DbGetVacCenters: ${error.message}`);
+		update_status(`ERRR:DbGetVacCenters: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -169,7 +169,7 @@ async function dbget_districts(db, stateId) {
 		}
 	} catch(error) {
 		console.error("ERRR:DbGetDistricts:", error)
-		update_status(`ERRR:DbGetDistricts: ${error.message}`);
+		update_status(`ERRR:DbGetDistricts: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -214,7 +214,7 @@ async function dbget_states(db, states2Get=null) {
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
 	} catch(error) {
-		update_status(`ERRR:DbGetStates: ${error.message}`);
+		update_status(`ERRR:DbGetStates: ${error.message}`, ghErrorStatus);
 		console.error("ERRR:DbGetStates:", error)
 	}
 }
@@ -222,6 +222,7 @@ async function dbget_states(db, states2Get=null) {
 
 function dummy_update_status(msg) { /*console.log("DBUG:DummyUpdateStatus:");*/ }
 if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
+if (typeof(ghErrorStatus) === 'undefined') ghErrorStatus = null;
 
 
 if (typeof(exports) === 'undefined') exports = {};

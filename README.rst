@@ -182,3 +182,11 @@ Allow user to trigger a auto periodic repeating search. However if there are any
 search result, user will have to monitor it manually and act on it. The logic wont alert the
 user or so.
 
+v20210525IST1817
+=================
+
+Maybe slightly cleaner Browser UI.
+AutoRepeatingSearch triggers immidiate search and also uses latest search paramaters, when ever
+its triggered by user/system.
+Error if any, is shown to user at the bottom.
+
