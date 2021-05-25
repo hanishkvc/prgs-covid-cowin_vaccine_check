@@ -8,6 +8,7 @@
 var elMainTbl = document.getElementById("maintbl");
 var elState = document.getElementById("vstate");
 var elDate = document.getElementById("vdate");
+var elNotify = document.getElementById("vnotify");
 var elSearch = document.getElementById("vsearch");
 var elAuto = document.getElementById("vauto");
 var elVac = document.getElementById("vvac");
@@ -50,6 +51,31 @@ function tbl_append(el, index, datas, part="tbody") {
 
 function update_status(msg, el=elStatus) {
 	el.innerHTML = msg;
+}
+
+
+async function notify_getperm() {
+	if (!("Notification" in window)) {
+		console.error("WARN:NotifyGetPerm: Browser doesnt support notification");
+		return false;
+	}
+	console.log(`INFO:NotifyGetPerm: Notification.Permission: ${Notification.permission}`);
+	if (Notification.permission != "granted") {
+		await Notification.requestPermission();
+	}
+	return true;
+}
+
+
+function notify_user(msg) {
+	if (!("Notification" in window)) {
+		console.error("WARN:NotifyUser: Browser doesnt support notification");
+		return;
+	}
+	if (Notification.permission == "granted") {
+		console.log("INFO:NotifyUser:", msg);
+		new Notification(msg);
+	}
 }
 
 
@@ -118,12 +144,21 @@ function auto_clicked(ev) {
 }
 
 
+function notify_clicked(ev) {
+	notify_getperm().then((notifyThere) => {
+		if (!notifyThere)
+			elNotify.textContent = "No Notifications";
+	});
+}
+
+
 function start_here() {
 	console.log("INFO:StartHere:...");
 	db = {};
 	db['cb_dbgetstates_statedone'] = handle_statedone;
 	elSearch.onclick = search_clicked;
 	elAuto.onclick = auto_clicked;
+	elNotify.onclick = notify_clicked;
 }
 
 
