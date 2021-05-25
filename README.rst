@@ -206,4 +206,6 @@ v20210526IST0210
 
 Experimental NotifyMe logic, which works only in some setups.
 Bit more informative Done Status message.
+Avoid UserAgent wrt Fetch request headers (Else Firefox fetch's failed).
+
 

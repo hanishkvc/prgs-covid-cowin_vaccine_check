@@ -33,6 +33,7 @@ var fetchOptions = {
 		"User-Agent": "india-hkvc/20210526.01 node-fetch/202105"
 		}
 	}
+var fetchOptions = { }
 
 
 /*
