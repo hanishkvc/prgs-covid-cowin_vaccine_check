@@ -69,14 +69,25 @@ after each search run.
 Chances are the periodic auto repeating search supported by the modular browser based version of
 the program will trigger the search only when the user is actively using the system and inturn
 potentially the browser. Else the browser may decide to pause/stop such background logics on its
-own to avoid overloading the local system or so.
+own to avoid overloading the local system or to conserve power or ... so.
+
+   Firefox mobile has a issue/bug with setInterval (i.e periodic call backs), so auto repeating
+   search wont work with it. Also even on Chrome mobile/android, these callbacks are not called
+   when required, instead one call will be made, as and when the browser is visible/active again.
 
 NotifyMe option in the Browser based version of this logic is experimental and doesnt work in
 many of the setups.
 
-   Seems to work with Chrome on Chromebook. However Chrome on Android doesnt seem to support
-   the same and some discussions on the web, seem to indicate that one needs to use service
-   workers wrt android chrome.
+   Seems to work with Chrome and Firefox on Chromebook (checked) and potentially logically
+   hopefully on desktops (need to check). However mobile versions of Chrome ie on Android
+   doesnt seem to support the same and some discussions on the web, seem to indicate
+   that one needs to use service workers wrt android chrome. Even thou I can understand
+   the reason given for needing service worker, at the same time I dont see any reason as
+   to why the system/browser cant adopt orphan notifications with limited interactivity
+   support wrt such orphaned notifications on the mobile environments. Thus with a relatively
+   simple and logically sane fix at the system-notification level, google can ensure a relatively
+   uniform behaviour across desktop and mobile from the same simple js code. Why oh why google
+   u arent taking such a path???
 
 
 Program Versions
@@ -196,8 +207,10 @@ v20210525IST1817
 =================
 
 Maybe slightly cleaner Browser UI.
-AutoRepeatingSearch triggers immidiate search and also uses latest search paramaters, when ever
-its triggered by user/system.
+
+AutoRepeatingSearch triggers immidiate search and also uses latest search paramaters,
+when ever its triggered by user/system.
+
 Error if any, is shown to user at the bottom.
 
 
@@ -205,7 +218,11 @@ v20210526IST0210
 =================
 
 Experimental NotifyMe logic, which works only in some setups.
+
 Bit more informative Done Status message.
-Avoid UserAgent wrt Fetch request headers (Else Firefox fetch's failed).
+
+Avoid UserAgent wrt Fetch request headers, else Firefox's fetch fails.
+However nodejs node-fetch wont work without UserAgent. Need to add a
+generic workaround which can handle both cases from same code.
 
 
