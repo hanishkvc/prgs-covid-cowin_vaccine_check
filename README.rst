@@ -2,7 +2,7 @@
 CoWin Vaccine Availability Status Check
 ##########################################
 Author: HanishKVC
-Version: v20210523IST1925
+Version: v20210526IST0122
 
 Overview
 ##########
@@ -19,7 +19,10 @@ for those needing 2nd dose and that too for vaccines with lower production capac
 
 So this simple program has been created to try and help with the same. It returns the list of
 vaccination centers for the specified state, which have vaccines available on the given date,
-as of the moment when this logic is run.
+as of the moment when this logic is run. The query could be either manually triggered each
+time as required, or a auto repeating search can be enabled (wrt browser mode). The results
+are shown on the screen (web page or terminal as the case maybe) as well as optionally local
+notification (wrt browser mode) may be triggered.
 
 This is a minimal keep it simple and stupid (kiss) based logic, to get the required data and
 look at it in a efficient way by caching it temporarily for a short period, so as to avoid
@@ -36,13 +39,6 @@ with any 3rd party.
 At the same time, I would request the central govt to go for a more structured phase wise, dose
 aware vaccination drive, rather than the current musical chair, that the unconnected commoners
 are needed to participate in currently, till one gets vaccinated.
-
-Also if the cowin site itself provides a state level view in one shot, then there would be no
-need for this program, Unless one is looking at extending this with automatic periodic check
-and notification purpose. This would be especially true provided the existing cowin site caches
-the data locally on the client side, else this logic would be slightly efficient, at the expense
-of slightly stale data (but given that CoWin public api data is already time delayed potentially
-this shouldnt matter).
 
 
 Things to Note
@@ -75,6 +71,13 @@ the program will trigger the search only when the user is actively using the sys
 potentially the browser. Else the browser may decide to pause/stop such background logics on its
 own to avoid overloading the local system or so.
 
+NotifyMe option in the Browser based version of this logic is experimental and doesnt work in
+many of the setups.
+
+   Seems to work with Chrome on Chromebook. However Chrome on Android doesnt seem to support
+   the same and some discussions on the web, seem to indicate that one needs to use service
+   workers wrt android chrome.
+
 
 Program Versions
 ##################
@@ -101,9 +104,15 @@ of the search.
 There is also a periodic auto repeating search option, which will trigger the querying of
 the cowin server periodically without user requiring to explicitly press the search button
 each time. This is currently setup to do the periodic search once every 10 minutes. However
-do note that this logic just updates the result shown on screen, the user needs to monitor
-the same and act on it as they see fit. Also this auto repeat logic may get paused by the
-browser, as noted previously.
+do note that this logic just updates the result shown on screen, and possibly notifies the
+user using mobile/desktop notification(experimental), the user needs to monitor the same
+(page and notification) and act on it as they see fit. Also this auto repeat logic may get
+paused by the browser, as noted previously.
+
+   There is a NotifyMe button to toggle the experimental local notification logic. User
+   will also have to explicitly grant permission for showing local notification, when
+   the same is requested for by the logic, after user clicks start-notifyme. This may
+   not work in many of the setups.
 
 
 From your local machine
@@ -182,6 +191,7 @@ Allow user to trigger a auto periodic repeating search. However if there are any
 search result, user will have to monitor it manually and act on it. The logic wont alert the
 user or so.
 
+
 v20210525IST1817
 =================
 
@@ -189,4 +199,11 @@ Maybe slightly cleaner Browser UI.
 AutoRepeatingSearch triggers immidiate search and also uses latest search paramaters, when ever
 its triggered by user/system.
 Error if any, is shown to user at the bottom.
+
+
+v20210526IST0210
+=================
+
+Experimental NotifyMe logic, which works only in some setups.
+Bit more informative Done Status message.
 
