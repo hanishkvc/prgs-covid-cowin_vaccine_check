@@ -159,7 +159,7 @@ function notify_clicked(ev) {
 			if (!notifyThere) {
 				elNotify.textContent = "No Notifications";
 			} else {
-				db.NotifyMe = true;
+				db.bNotifyMe = true;
 				elNotify.textContent = "Stop NotifyMe"
 			}
 		});
