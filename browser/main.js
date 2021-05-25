@@ -75,6 +75,8 @@ function notify_user(msg) {
 	if (Notification.permission == "granted") {
 		console.log("INFO:NotifyUser:", msg);
 		new Notification(msg);
+	} else {
+		console.log("INFO:NotifyUser:Skipping:", msg);
 	}
 }
 
@@ -96,14 +98,16 @@ function handle_statedone(db, stateId, type) {
 }
 
 
-function do_search() {
+function do_search(bNotifyMode) {
 	update_status("Search started...");
 	update_status("Vasudhaiva Kutumbakam", elStatusAlert);
 	tbl_clear(elMainTbl, 1);
 	dbget_states(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
-			update_status(`Done: VacCenters with Vacs: ${db.vcCnt}`);
+			msg = `State: ${db.states} Date: ${db.date} Vac: ${db.vaccine} NumOfVacCenters: ${db.vcCnt}`
+			update_status("Done:"+msg);
+			if (bNotifyMode && db.bNotifyMe) notify_user(msg);
 		});
 }
 
@@ -124,7 +128,9 @@ function get_searchparams() {
 
 function search_clicked(ev) {
 	get_searchparams();
-	do_search();
+	var bNotifyMode = false;
+	if (ev === null) bNotifyMode = true;
+	do_search(bNotifyMode);
 }
 
 
@@ -145,16 +151,26 @@ function auto_clicked(ev) {
 
 
 function notify_clicked(ev) {
-	notify_getperm().then((notifyThere) => {
-		if (!notifyThere)
-			elNotify.textContent = "No Notifications";
-	});
+	if (db.bNotifyMe) {
+		db.bNotifyMe = false;
+		elNotify.textContent = "Start NotifyMe"
+	} else {
+		notify_getperm().then((notifyThere) => {
+			if (!notifyThere) {
+				elNotify.textContent = "No Notifications";
+			} else {
+				db.NotifyMe = true;
+				elNotify.textContent = "Stop NotifyMe"
+			}
+		});
+	}
 }
 
 
 function start_here() {
 	console.log("INFO:StartHere:...");
 	db = {};
+	db['bNotifyMe'] = false;
 	db['cb_dbgetstates_statedone'] = handle_statedone;
 	elSearch.onclick = search_clicked;
 	elAuto.onclick = auto_clicked;
