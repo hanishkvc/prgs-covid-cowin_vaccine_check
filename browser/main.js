@@ -77,7 +77,7 @@ function do_search() {
 	dbget_states(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
-			update_status("Done");
+			update_status(`Done: VacCenters with Vacs: ${db.vcCnt}`);
 		});
 }
 
