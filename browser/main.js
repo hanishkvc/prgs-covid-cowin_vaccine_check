@@ -64,7 +64,7 @@ function show_vcs(el, db) {
 function handle_statedone(db, stateId, type) {
 	tP = document.getElementById("time");
 	let dateTime = new Date(db.states[stateId][db.date].time);
-	tP.textContent = `Availability status queried at ${dateTime} ie ${type}`;
+	tP.textContent = `Availability status queried at ${dateTime} ie Local ${type}`;
 }
 
 
