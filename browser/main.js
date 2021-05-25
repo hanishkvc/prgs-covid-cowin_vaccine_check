@@ -105,8 +105,8 @@ function do_search(bNotifyMode) {
 	dbget_states(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
-			msg = `State: ${db.states} Date: ${db.date} Vac: ${db.vaccine} NumOfVacCenters: ${db.vcCnt}`
-			update_status("Done:"+msg);
+			msg = `State: ${db.s_states}, Date: ${db.date}, Vac: ${db.vaccine}, NumOfVacCenters: ${db.vcCnt}`
+			update_status("Done: "+msg);
 			if (bNotifyMode && db.bNotifyMe) notify_user(msg);
 		});
 }
