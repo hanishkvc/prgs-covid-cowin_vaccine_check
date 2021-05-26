@@ -88,6 +88,7 @@ function vaccenter_string_ex(db, stateId, districtId, vcenterId, vcInstanceId) {
 function dblookup_vaccenters(db, callback, passAlong=null) {
 	let vacType = db.vaccine;
 	db['vcCnt'] = 0;
+	db['vacCnt'] = 0;
 	if (vacType === undefined) {
 		vacType = null;
 	} else if (vacType !== null) {
@@ -114,6 +115,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 					if (vcInst.available_capacity === 0) continue;
 					callback(db, sk, dk, vcInst, passAlong);
 					db['vcCnt'] += 1;
+					db['vacCnt'] += vcInst.available_capacity;
 				}
 			}
 		}
