@@ -33,7 +33,26 @@ var fetchOptions = {
 		"User-Agent": "india-hkvc/20210526.01 node-fetch/202105"
 		}
 	}
-var fetchOptions = { }
+
+
+function cowinner_init() {
+	// If browser, then it wont have process object by default, while window object will be defined
+	if (typeof(window) === "undefined") {
+		if (typeof(process) === "undefined") {
+			console.log("INFO:CoWinner: Running in unknown context");
+		} else {
+			console.log(`INFO:CoWinner: Running in node [${process.title} ${process.version}]`);
+		}
+	} else {
+		if (typeof(navigator) === "undefined") {
+			console.log("INFO:CoWinner: Running in a browser (maybe)");
+		} else {
+			console.log(`INFO:CoWinner: Running in browser [${navigator.userAgent}]`);
+		}
+		fetchOptions = { }
+	}
+}
+cowinner_init();
 
 
 /*
