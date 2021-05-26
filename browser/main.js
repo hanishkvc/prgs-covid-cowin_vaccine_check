@@ -67,14 +67,15 @@ async function notify_getperm() {
 }
 
 
-function notify_user(msg) {
+function notify_user(title, body) {
+	msg = `${title} ${body}`
 	if (!("Notification" in window)) {
-		console.error("WARN:NotifyUser: Browser doesnt support notification");
+		console.error("WARN:NotifyUser: Browser doesnt support notification:", msg);
 		return;
 	}
 	if (Notification.permission == "granted") {
 		console.log("INFO:NotifyUser:", msg);
-		new Notification(msg);
+		new Notification(title, { 'body': body });
 	} else {
 		console.log("INFO:NotifyUser:Skipping:", msg);
 	}
@@ -106,8 +107,10 @@ function do_search(bNotifyMode) {
 		.then(() => {
 			show_vcs(elMainTbl, db);
 			msg = `State: ${db.s_states}, Date: ${db.date}, Vac: ${db.vaccine}, NumOfVacCenters: ${db.vcCnt}`
+			notTitle = `Vac: ${db.vaccine}, VacCenters: ${db.vcCnt}`
+			notBody = `State: ${db.s_states}, Date: ${db.date}`
 			update_status("Done: "+msg);
-			if (bNotifyMode && db.bNotifyMe) notify_user(msg);
+			if (bNotifyMode && db.bNotifyMe) notify_user(notTitle, notBody);
 		});
 }
 
