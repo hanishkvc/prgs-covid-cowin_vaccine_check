@@ -69,25 +69,38 @@ after each search run.
 Chances are the periodic auto repeating search supported by the modular browser based version of
 the program will trigger the search only when the user is actively using the system and inturn
 potentially the browser. Else the browser may decide to pause/stop such background logics on its
-own to avoid overloading the local system or to conserve power or ... so.
+own to avoid overloading the local system or to conserve power or ... so, especially on mobile
+or other such power constrained systems.
 
    Firefox mobile has a issue/bug with setInterval (i.e periodic call backs), so auto repeating
    search wont work with it. Also even on Chrome mobile/android, these callbacks are not called
-   when required, instead one call will be made, as and when the browser is visible/active again.
+   as specified in setInterval, instead one call will be made, as and when the browser is visible
+   /active again.
 
-NotifyMe option in the Browser based version of this logic is experimental and doesnt work in
-many of the setups.
+NotifyMe option in the Browser based version of this logic is experimental and currently works
+mostly on desktop or equivalent environments(chromebook) and not on mobile/similar environments.
+This allows notification to be generated locally for the user, which they can see from their
+GUI systems notifications panel.
 
-   Seems to work with Chrome and Firefox on Chromebook (checked) and potentially logically
-   hopefully on desktops (need to check). However mobile versions of Chrome ie on Android
-   doesnt seem to support the same and some discussions on the web, seem to indicate
-   that one needs to use service workers wrt android chrome. Even thou I can understand
-   the reason given for needing service worker, at the same time I dont see any reason as
-   to why the system/browser cant adopt orphan notifications with limited interactivity
-   support wrt such orphaned notifications on the mobile environments. Thus with a relatively
-   simple and logically sane fix at the system-notification level, google can ensure a relatively
-   uniform behaviour across desktop and mobile from the same simple js code. Why oh why google
-   u arent taking such a path???
+   Notification api seems to work with Chrome/Firefox on Desktop/Chromebook (checked to some
+   extent) and potentially logically hopefully on windows/mac also (need to check).
+
+   However mobile versions of Chrome ie on Android doesnt seem to support the same and some
+   discussions/docs on the web, seem to indicate that one needs to use service workers wrt
+   android chrome. Even thou I can understand the reason given for needing service worker,
+   (rather it has its use with interactive notifications) at the same time I dont see any
+   reason as to why system/browser cant adopt orphan notifications with limited interactivity
+   support needs on the mobile environments.
+
+      And by allowing setInterval based callbacks to be categorised into different classes,
+      they could even allow simple kinds of low overhead and low complexity background
+      logics even on mobile/power constrained devices; especially where other aspects of
+      service workers are not needed.
+
+   Thus with a relatively simple and logically sane fix at the system-notification level,
+   google can ensure a relatively uniform behaviour across desktop and mobile from the same
+   simple js code. Why oh why google u arent taking such a path??? Same is also applicable
+   to firefox.
 
 
 Program Versions
@@ -116,14 +129,14 @@ There is also a periodic auto repeating search option, which will trigger the qu
 the cowin server periodically without user requiring to explicitly press the search button
 each time. This is currently setup to do the periodic search once every 10 minutes. However
 do note that this logic just updates the result shown on screen, and possibly notifies the
-user using mobile/desktop notification(experimental), the user needs to monitor the same
+user using local(desktop/mobile) notification(experimental). User needs to monitor the same
 (page and notification) and act on it as they see fit. Also this auto repeat logic may get
 paused by the browser, as noted previously.
 
    There is a NotifyMe button to toggle the experimental local notification logic. User
    will also have to explicitly grant permission for showing local notification, when
    the same is requested for by the logic, after user clicks start-notifyme. This may
-   not work in many of the setups.
+   not work in some of the setups - especially wrt mobiles/...
 
 
 From your local machine
@@ -133,6 +146,10 @@ User needs to download the html file and the related javascript files into a fol
 on their machine and then User needs to load the index.html page provided by this logic.
 Inturn it will list the vac centers where vaccines are available, for the specified state
 and date.
+
+NOTE: Local notifications dont seem to work in this context, as browsers seem to ignore
+local file urls wrt thier notification management logic.
+
 
 Directly from github
 ~~~~~~~~~~~~~~~~~~~~~~
