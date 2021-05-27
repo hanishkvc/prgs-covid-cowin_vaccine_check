@@ -56,6 +56,26 @@ cowinner_init();
 
 
 /*
+ * Get the list of states in CoWin system
+ */
+async function _get_states() {
+	let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
+	let data = await resp.json()
+	return data;
+}
+
+
+/*
+ * Get the list of districts wrt a specified stateId in CoWin system
+ */
+async function _get_districts(stateId) {
+	let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
+	let data = await resp.json()
+	return data;
+}
+
+
+/*
  * Convert the given vaccine center instance into a string
  * containing useful info about the same, along with the state-dist
  */
@@ -180,8 +200,7 @@ function cache_not_fresh(db, stateId) {
 async function dbget_districts(db, stateId) {
 	if (db.states[stateId]['districts'] === undefined) db.states[stateId]['districts'] = {};
 	try {
-		let resp = await fetch(`${srvr}/v2/admin/location/districts/${stateId}`, fetchOptions)
-		let oDists = await resp.json()
+		let oDists = await _get_districts(stateId);
 		for(distK in oDists.districts) {
 			let dist = oDists.districts[distK];
 			if (db.states[stateId].districts[dist.district_id] === undefined) db.states[stateId].districts[dist.district_id] = {};
@@ -201,29 +220,26 @@ async function dbget_districts(db, stateId) {
 /*
  * Get details about vaccine availability wrt specified list of states
  * db : the object which will contain the details
+ * 	db['s_states'] : operate wrt these states only, if provided.
  * 	db['date'] : the date for which availability data should be fetched.
  * 	db['vaccine'] : the vaccine one is interested in.
- * states2Get : the list of states to get data for
  */
-async function dbget_states(db, states2Get=null) {
+async function dbget_states(db) {
 	if (db['states'] === undefined) db['states'] = {};
-	if (states2Get === null) {
-		states2Get = db['s_states'];
-	} else {
-		db['s_states'] = states2Get;
-	}
+	states2Get = db['s_states'];
 	try {
-		let resp = await fetch(`${srvr}/v2/admin/location/states`, fetchOptions)
-		let data = await resp.json()
+		let data = await _get_states();
 		for(stateK in data.states) {
 			let state = data.states[stateK];
 			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
 			update_status(`INFO:DbGetStates: ${state.state_name}`);
-			let stateIndex = states2Get.findIndex((curState) => {
-				if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
-				return false;
-				});
-			if (stateIndex === -1) continue;
+			if (states2Get !== undefined) {
+				let stateIndex = states2Get.findIndex((curState) => {
+					if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
+					return false;
+					});
+				if (stateIndex === -1) continue;
+			}
 			let dbState = db.states[state.state_id];
 			if (dbState === undefined) dbState = {};
 			db.states[state.state_id] = dbState;
