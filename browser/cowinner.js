@@ -171,7 +171,6 @@ async function dbget_vaccenters(db, stateId, districtId, date=null) {
 			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
-		console.error("ERRR:DbGetVacCenters:", error)
 		update_status(`ERRR:DbGetVacCenters: ${error.message}`, ghErrorStatus);
 	}
 }
@@ -206,12 +205,10 @@ async function dbget_districts(db, stateId) {
 			if (db.states[stateId].districts[dist.district_id] === undefined) db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 			db.states[stateId].districts[dist.district_id]['district_id'] = dist.district_id;
-			console.log("INFO:DbGetDistricts:", dist.district_id, dist.district_name);
-			update_status(`INFO:DbGetDistricts: ${dist.district_name}`);
+			update_status(`INFO:DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
 			await dbget_vaccenters(db, stateId, dist.district_id);
 		}
 	} catch(error) {
-		console.error("ERRR:DbGetDistricts:", error)
 		update_status(`ERRR:DbGetDistricts: ${error.message}`, ghErrorStatus);
 	}
 }
@@ -231,8 +228,7 @@ async function dbget_states(db) {
 		let data = await _get_states();
 		for(stateK in data.states) {
 			let state = data.states[stateK];
-			console.log("INFO:DbGetStates:", state.state_id, state.state_name);
-			update_status(`INFO:DbGetStates: ${state.state_name}`);
+			update_status(`INFO:DbGetStates: ${state.state_id} ${state.state_name}`);
 			if (states2Get !== undefined) {
 				let stateIndex = states2Get.findIndex((curState) => {
 					if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
@@ -255,13 +251,16 @@ async function dbget_states(db) {
 		}
 	} catch(error) {
 		update_status(`ERRR:DbGetStates: ${error.message}`, ghErrorStatus);
-		console.error("ERRR:DbGetStates:", error)
 	}
 }
 
 
-function dummy_update_status(msg) { /*console.log("DBUG:DummyUpdateStatus:");*/ }
-if (typeof(update_status) === 'undefined') update_status = dummy_update_status;
+function _update_status(msg) {
+	console.log(msg);
+}
+
+
+if (typeof(update_status) === 'undefined') update_status = _update_status;
 if (typeof(ghErrorStatus) === 'undefined') ghErrorStatus = null;
 
 
