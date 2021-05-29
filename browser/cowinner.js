@@ -214,6 +214,11 @@ async function dbget_districts(db, stateId) {
 }
 
 
+async function _dbget_states(db) {
+
+
+}
+
 /*
  * Get details about vaccine availability wrt specified list of states
  * db : the object which will contain the details
@@ -229,6 +234,11 @@ async function dbget_states(db) {
 		for(stateK in data.states) {
 			let state = data.states[stateK];
 			update_status(`INFO:DbGetStates: ${state.state_id} ${state.state_name}`);
+			let dbState = db.states[state.state_id];
+			if (dbState === undefined) dbState = {};
+			db.states[state.state_id] = dbState;
+			db.states[state.state_id]['name'] = state.state_name;
+			db.states[state.state_id]['state_id'] = state.state_id;
 			if (states2Get !== undefined) {
 				let stateIndex = states2Get.findIndex((curState) => {
 					if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
@@ -236,11 +246,6 @@ async function dbget_states(db) {
 					});
 				if (stateIndex === -1) continue;
 			}
-			let dbState = db.states[state.state_id];
-			if (dbState === undefined) dbState = {};
-			db.states[state.state_id] = dbState;
-			db.states[state.state_id]['name'] = state.state_name;
-			db.states[state.state_id]['state_id'] = state.state_id;
 			let cb = db.cb_dbgetstates_statedone;
 			if (cache_not_fresh(db, state.state_id)) {
 				if (cb !== undefined) cb(db, state.state_id, "CACHED");
