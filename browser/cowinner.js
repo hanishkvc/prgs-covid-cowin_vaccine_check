@@ -215,9 +215,23 @@ async function dbget_districts(db, stateId) {
 
 
 async function _dbget_states(db) {
-
-
+	if (db['states'] === undefined) db['states'] = {};
+	try {
+		let data = await _get_states();
+		for(stateK in data.states) {
+			let state = data.states[stateK];
+			update_status(`INFO:_DbGetStates: ${state.state_id} ${state.state_name}`);
+			let dbState = db.states[state.state_id];
+			if (dbState === undefined) dbState = {};
+			db.states[state.state_id] = dbState;
+			db.states[state.state_id]['name'] = state.state_name;
+			db.states[state.state_id]['state_id'] = state.state_id;
+		}
+	} catch(error) {
+		update_status(`ERRR:_DbGetStates: ${error.message}`, ghErrorStatus);
+	}
 }
+
 
 /*
  * Get details about vaccine availability wrt specified list of states
@@ -226,22 +240,16 @@ async function _dbget_states(db) {
  * 	db['date'] : the date for which availability data should be fetched.
  * 	db['vaccine'] : the vaccine one is interested in.
  */
-async function dbget_states(db) {
-	if (db['states'] === undefined) db['states'] = {};
+async function dbget_state_vcs(db) {
 	states2Get = db['s_states'];
 	try {
-		let data = await _get_states();
-		for(stateK in data.states) {
-			let state = data.states[stateK];
-			update_status(`INFO:DbGetStates: ${state.state_id} ${state.state_name}`);
-			let dbState = db.states[state.state_id];
-			if (dbState === undefined) dbState = {};
-			db.states[state.state_id] = dbState;
-			db.states[state.state_id]['name'] = state.state_name;
-			db.states[state.state_id]['state_id'] = state.state_id;
+		await _dbget_states(db);
+		for(stateK in db.states) {
+			let state = db.states[stateK];
+			update_status(`INFO:DbGetStates: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
 				let stateIndex = states2Get.findIndex((curState) => {
-					if (state.state_name.toUpperCase() === curState.toUpperCase()) return true;
+					if (state.name.toUpperCase() === curState.toUpperCase()) return true;
 					return false;
 					});
 				if (stateIndex === -1) continue;
@@ -270,7 +278,7 @@ if (typeof(ghErrorStatus) === 'undefined') ghErrorStatus = null;
 
 
 if (typeof(exports) === 'undefined') exports = {};
-exports.dbget_states = dbget_states;
+exports.dbget_states = dbget_state_vcs;
 exports.vaccenter_string = vaccenter_string;
 exports.vaccenter_string_ex = vaccenter_string_ex;
 exports.dblookup_vaccenters = dblookup_vaccenters;
