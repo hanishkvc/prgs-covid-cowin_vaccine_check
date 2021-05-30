@@ -132,6 +132,8 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 		if (strlist_findindex(db.s_states, state.name) === -1) continue;
 		for(dk in state.districts) {
 			let dist = state.districts[dk];
+			if (dist[db.date] === undefined) continue;
+			if (dist[db.date].vaccenters === undefined) continue;
 			for(vk in dist[db.date].vaccenters) {
 				let vc = dist[db.date].vaccenters[vk];
 				//console.log(vc);
