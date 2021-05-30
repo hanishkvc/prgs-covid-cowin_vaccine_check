@@ -246,7 +246,7 @@ async function dbget_state_vcs(db) {
 		await _dbget_states(db);
 		for(stateK in db.states) {
 			let state = db.states[stateK];
-			update_status(`INFO:DbGetStates: ${state.state_id} ${state.name}`);
+			update_status(`INFO:DbGetStateVCs: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
 				let stateIndex = states2Get.findIndex((curState) => {
 					if (state.name.toUpperCase() === curState.toUpperCase()) return true;
@@ -263,7 +263,7 @@ async function dbget_state_vcs(db) {
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
 	} catch(error) {
-		update_status(`ERRR:DbGetStates: ${error.message}`, ghErrorStatus);
+		update_status(`ERRR:DbGetStateVCs: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -278,7 +278,7 @@ if (typeof(ghErrorStatus) === 'undefined') ghErrorStatus = null;
 
 
 if (typeof(exports) === 'undefined') exports = {};
-exports.dbget_states = dbget_state_vcs;
+exports.dbget_state_vcs = dbget_state_vcs;
 exports.vaccenter_string = vaccenter_string;
 exports.vaccenter_string_ex = vaccenter_string_ex;
 exports.dblookup_vaccenters = dblookup_vaccenters;

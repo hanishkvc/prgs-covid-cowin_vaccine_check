@@ -45,7 +45,7 @@ function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 
 handle_args(process.argv.slice(2));
 var db = { 'date': gDate, 'vaccine': gVaccine, 's_states': [ gState ] };
-cw.dbget_states(db).then(() => {
+cw.dbget_state_vcs(db).then(() => {
 	cw.dblookup_vaccenters(db, handle_vaccenter);
 	console.log(`INFO: Done:VacCentersWithVacs: State: ${db.s_states}, Date: ${db.date}, Vaccine ${db.vaccine}, Qty: ${db.vacCnt}, VacCenters: ${db.vcCnt}`);
 	});

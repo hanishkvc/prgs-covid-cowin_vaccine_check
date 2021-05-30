@@ -103,7 +103,7 @@ function do_search(bNotifyMode) {
 	update_status("Search started...");
 	update_status("Vasudhaiva Kutumbakam", elStatusAlert);
 	tbl_clear(elMainTbl, 1);
-	dbget_states(db)
+	dbget_state_vcs(db)
 		.then(() => {
 			show_vcs(elMainTbl, db);
 			msg = `State: ${db.s_states}, Date: ${db.date}, Vac: ${db.vaccine}, Cnt: ${db.vacCnt}, NumOfVacCenters: ${db.vcCnt}`
