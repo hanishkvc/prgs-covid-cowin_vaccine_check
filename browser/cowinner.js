@@ -196,7 +196,7 @@ function cache_not_fresh(db, stateId) {
 }
 
 
-async function dbget_districts(db, stateId) {
+async function _dbget_districts(db, stateId) {
 	if (db.states[stateId]['districts'] === undefined) db.states[stateId]['districts'] = {};
 	try {
 		let oDists = await _get_districts(stateId);
@@ -205,11 +205,10 @@ async function dbget_districts(db, stateId) {
 			if (db.states[stateId].districts[dist.district_id] === undefined) db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 			db.states[stateId].districts[dist.district_id]['district_id'] = dist.district_id;
-			update_status(`INFO:DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
-			await dbget_vaccenters(db, stateId, dist.district_id);
+			update_status(`INFO:_DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
 		}
 	} catch(error) {
-		update_status(`ERRR:DbGetDistricts: ${error.message}`, ghErrorStatus);
+		update_status(`ERRR:_DbGetDistricts: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -259,7 +258,11 @@ async function dbget_state_vcs(db) {
 				if (cb !== undefined) cb(db, state.state_id, "CACHED");
 				continue;
 			}
-			await dbget_districts(db, state.state_id);
+			await _dbget_districts(db, state.state_id);
+			for(distK in state.districts) {
+				let dist = state.districts[distK];
+				await dbget_vaccenters(db, state.state_id, dist.district_id);
+			}
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
 	} catch(error) {
