@@ -40,7 +40,13 @@ function handle_args(cmdArgs) {
 function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 	state = db.states[sk];
 	dist = state.districts[dk];
-	msg = hlpr.str_ofvalues([10,16,24,32,12,8,8], [vcInst.date, state.name, dist.name, vcInst.name, vcInst.vaccine, vcInst.available_capacity_dose1, vcInst.available_capacity_dose2]);
+	msg = hlpr.str_tabular([10,12,8,8,32,8,16,24], [
+		vcInst.date,
+		vcInst.vaccine, vcInst.available_capacity_dose1, vcInst.available_capacity_dose2,
+		vcInst.name,
+		vcInst.pincode,
+		dist.name,
+		state.name]);
 	console.log(msg);
 	//console.log(cw.vaccenter_string(vcInst, state.name, dist.name));
 }
