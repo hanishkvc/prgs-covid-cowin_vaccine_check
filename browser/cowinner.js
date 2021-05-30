@@ -13,16 +13,17 @@
  * 		districts (bunch of district objects)
  * 			district_id
  * 			name
- * 			vaccenters (bunch of vaccine center objects)
- * 				vaccenterInstances (kind of array of same vaccine center instances)
- * 					center_id
- * 					name
- * 					available_capacity
- * 					...
- * 					NOTE: As each vaccine center could provide different vaccines
- * 					to different age group people, so each such unique combination
- * 					will be treated as a vcInstance.
- * 						Ex: VC1_45+_Covishield, VC1_18+_Covishield, VC1_45+_Covaxin, ...
+ * 			date
+ * 				vaccenters (bunch of vaccine center objects)
+ * 					vaccenterInstances (kind of array of same vaccine center instances)
+ * 						center_id
+ *	 					name
+ * 						available_capacity
+ * 						...
+ * 						NOTE: As each vaccine center could provide different vaccines
+ * 						to different age group people, so each such unique combination
+ * 						will be treated as a vcInstance.
+ * 							Ex: VC1_45+_Covishield, VC1_18+_Covishield, VC1_45+_Covaxin, ...
  *
  */
 
@@ -158,7 +159,7 @@ function _add2vaccenter(oVCs, vcInst) {
  * Get all vaccine centers for the given state-district, inturn for the given date.
  * date arg or db['date'] : the date for which vaccine centers should be looked up.
  */
-async function dbget_vaccenters(db, stateId, districtId, date=null) {
+async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
@@ -261,7 +262,7 @@ async function dbget_state_vcs(db) {
 			await _dbget_districts(db, state.state_id);
 			for(distK in state.districts) {
 				let dist = state.districts[distK];
-				await dbget_vaccenters(db, state.state_id, dist.district_id);
+				await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
 			}
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
