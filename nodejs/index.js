@@ -6,6 +6,7 @@
 
 fetch = require('node-fetch');
 const cw = require('../browser/cowinner');
+const hlpr = require('./hlpr');
 var gDate = null;
 var gState = 'Kerala';
 var gVaccine = null;
@@ -39,7 +40,9 @@ function handle_args(cmdArgs) {
 function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 	state = db.states[sk];
 	dist = state.districts[dk];
-	console.log(cw.vaccenter_string(vcInst, state.name, dist.name));
+	msg = hlpr.str_ofvalues([10,16,24,32,12,8,8], [vcInst.date, state.name, dist.name, vcInst.name, vcInst.vaccine, vcInst.available_capacity_dose1, vcInst.available_capacity_dose2]);
+	console.log(msg);
+	//console.log(cw.vaccenter_string(vcInst, state.name, dist.name));
 }
 
 
