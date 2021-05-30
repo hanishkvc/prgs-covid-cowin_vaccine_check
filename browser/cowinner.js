@@ -177,6 +177,34 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 }
 
 
+async function dbget_vaccenters_fordistrict(db, stateId, districtId, date=null) {
+	if (date === null) date = db['date'];
+	try {
+		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
+		let oVCInsts = await resp.json();
+		oVCInsts.centers.forEach(vc => {
+			console.log(vc.name);
+			let sessions = vc.sessions;
+			delete(vc.sessions);
+			sessions.forEach(vcInst => {
+				for(k in vcInst) {
+					vc[k] = vcInst[k];
+				}
+				if (db.states[stateId].districts[districtId][vc.date] === undefined) {
+					db.states[stateId].districts[districtId][vc.date] = {};
+					db.states[stateId].districts[districtId][vc.date]['vaccenters'] = {};
+				}
+				let vacCenters = db.states[stateId].districts[districtId][vc.date]['vaccenters'];
+				_add2vaccenter(vacCenters, vc);
+				});
+			});
+		var vacCenters = {};
+	} catch(error) {
+		update_status(`ERRR:DbGetVacCenters: ${error.message}`, ghErrorStatus);
+	}
+}
+
+
 function cache_not_fresh(db, stateId) {
 	var prevTime = db.states[stateId][db.date]
 	if (prevTime !== undefined) prevTime = prevTime.time;
