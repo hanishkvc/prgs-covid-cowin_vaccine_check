@@ -272,12 +272,19 @@ async function _dbget_states(db) {
  * 	db['s_states'] : operate wrt these states only, if provided.
  * 	db['date'] : the date for which availability data should be fetched.
  * 	db['vaccine'] : the vaccine one is interested in.
- * 	db['s_type'] : Specify what set of VCs availability data at time of query to get.
+ * 	db['s_type'] : Specify which set of VCs with available slots as captured
+ * 		in the cowin system, as of the time of the query to get.
  * 		'STATE_1DAY' : Get suitable VCs across full state for 1 day
  * 		'DISTRICT_1WEEK' : Get suitable VCs for given district for 1 week.
+ * 	db['s_districts'] : operate wrt these districts only, if provided.
+ * 		If same district name in more than one state, and inturn if such a
+ * 		combination of states and districts is provided, it will select
+ * 		such districts wrt all states which have matching district.
+ * TODO: CacheNotFresh needs updating to work with s_type especially district_1week.
  */
 async function dbget_vcs(db) {
 	states2Get = db['s_states'];
+	dists2Get = db['s_districts'];
 	sType = db['s_type'];
 	try {
 		await _dbget_states(db);
@@ -295,6 +302,10 @@ async function dbget_vcs(db) {
 			await _dbget_districts(db, state.state_id);
 			for(distK in state.districts) {
 				let dist = state.districts[distK];
+				//update_status(`INFO:DbGetStateVCs: ${dist.dist_id} ${dist.name}`);
+				if (dists2Get !== undefined) {
+					if (strlist_findindex(dists2Get, dist.name) === -1) continue;
+				}
 				await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
 			}
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
@@ -315,7 +326,7 @@ if (typeof(ghErrorStatus) === 'undefined') ghErrorStatus = null;
 
 
 if (typeof(exports) === 'undefined') exports = {};
-exports.dbget_state_vcs = dbget_state_vcs;
+exports.dbget_vcs = dbget_vcs;
 exports.vaccenter_string = vaccenter_string;
 exports.vaccenter_string_ex = vaccenter_string_ex;
 exports.dblookup_vaccenters = dblookup_vaccenters;
