@@ -283,7 +283,8 @@ async function _dbget_states(db) {
  * 		If same district name in more than one state, and inturn if such a
  * 		combination of states and districts is provided, it will select
  * 		such districts wrt all states which have matching district.
- * TODO: CacheNotFresh needs updating to work with s_type especially district_1week.
+ * NOTE: Caching of VCs data at the district level to help avoid loading the
+ * cowin server to some extent, is handled only for STATE_1DAY type queries.
  */
 async function dbget_vcs(db) {
 	states2Get = db['s_states'];
@@ -298,7 +299,7 @@ async function dbget_vcs(db) {
 				if (strlist_findindex(states2Get, state.name) === -1) continue;
 			}
 			let cb = db.cb_dbgetstates_statedone;
-			if (cache_not_fresh(db, state.state_id)) {
+			if ((sType === 'STATE_1DAY') && cache_not_fresh(db, state.state_id)) {
 				if (cb !== undefined) cb(db, state.state_id, "CACHED");
 				continue;
 			}
