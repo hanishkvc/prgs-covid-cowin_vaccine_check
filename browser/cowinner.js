@@ -57,6 +57,17 @@ cowinner_init();
 
 
 /*
+ * Check if given string in the array.
+ */
+function strlist_findindex(strList, findStr) {
+	return strList.findIndex((curStr) => {
+		if (findStr.toUpperCase() === curStr.toUpperCase()) return true;
+		return false;
+		});
+}
+
+
+/*
  * Get the list of states in CoWin system
  */
 async function _get_states() {
@@ -118,13 +129,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 	}
 	for(sk in db.states) {
 		let state = db.states[sk];
-		let stateIndex = db.s_states.findIndex((curState) => {
-			//console.log("DBUG:DBLookUpVCs:state", state);
-			//console.log("DBUG:DBLookUpVCs:curState", curState);
-			if (state.name.toUpperCase() === curState.toUpperCase()) return true;
-			return false;
-			});
-		if (stateIndex === -1) continue;
+		if (strlist_findindex(db.s_states, state.name) === -1) continue;
 		for(dk in state.districts) {
 			let dist = state.districts[dk];
 			for(vk in dist[db.date].vaccenters) {
@@ -177,7 +182,7 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 }
 
 
-async function dbget_vaccenters_fordistrict(db, stateId, districtId, date=null) {
+async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
@@ -267,20 +272,20 @@ async function _dbget_states(db) {
  * 	db['s_states'] : operate wrt these states only, if provided.
  * 	db['date'] : the date for which availability data should be fetched.
  * 	db['vaccine'] : the vaccine one is interested in.
+ * 	db['s_type'] : Specify what set of VCs availability data at time of query to get.
+ * 		'STATE_1DAY' : Get suitable VCs across full state for 1 day
+ * 		'DISTRICT_1WEEK' : Get suitable VCs for given district for 1 week.
  */
-async function dbget_state_vcs(db) {
+async function dbget_vcs(db) {
 	states2Get = db['s_states'];
+	sType = db['s_type'];
 	try {
 		await _dbget_states(db);
 		for(stateK in db.states) {
 			let state = db.states[stateK];
 			update_status(`INFO:DbGetStateVCs: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
-				let stateIndex = states2Get.findIndex((curState) => {
-					if (state.name.toUpperCase() === curState.toUpperCase()) return true;
-					return false;
-					});
-				if (stateIndex === -1) continue;
+				if (strlist_findindex(states2Get, state.name) === -1) continue;
 			}
 			let cb = db.cb_dbgetstates_statedone;
 			if (cache_not_fresh(db, state.state_id)) {
