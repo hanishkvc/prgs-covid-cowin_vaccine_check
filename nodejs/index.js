@@ -6,11 +6,12 @@
 
 fetch = require('node-fetch');
 const cw = require('../browser/cowinner');
-const hlpr = require('./hlpr');
+const hlpr = require('../browser/hlpr');
 var gDate = null;
 var gState = 'Kerala';
 var gDistrict = null;
 var gVaccine = null;
+var gSType = 'STATE_1DAY';
 
 
 function handle_args(cmdArgs) {
@@ -31,11 +32,21 @@ function handle_args(cmdArgs) {
 			gVaccine = cmdArgs[i+1];
 			i += 1;
 		}
+		if (cmdArgs[i] === '--stype') {
+			gSType = cmdArgs[i+1];
+			i += 1;
+		}
 		i += 1;
 	}
 	if (gDate === null) {
 		tDate = new Date();
 		gDate = `${tDate.getDate()}-${tDate.getMonth()+1}-${tDate.getFullYear()}`;
+	}
+	if (hlpr.strlist_findindex(['STATE_1DAY', 'DISTRICT_1WEEK'], gSType) === -1) {
+		console.error(`ERRR:CoWinVacCheckNJS:SType ${gSType} unknown, quiting...`);
+		process.exit();
+	} else {
+		console.log("INFO:CoWinVacCheckNJS:SType:", gSType);
 	}
 	gState = gState.toUpperCase();
 	console.log(`INFO:State=${gState}:Date=${gDate}:Vaccine=${gVaccine}`);
@@ -53,7 +64,6 @@ function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 		dist.name,
 		state.name]);
 	console.log(msg);
-	//console.log(cw.vaccenter_string(vcInst, state.name, dist.name));
 }
 
 

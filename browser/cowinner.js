@@ -57,17 +57,6 @@ cowinner_init();
 
 
 /*
- * Check if given string in the array.
- */
-function strlist_findindex(strList, findStr) {
-	return strList.findIndex((curStr) => {
-		if (findStr.toUpperCase() === curStr.toUpperCase()) return true;
-		return false;
-		});
-}
-
-
-/*
  * Get the list of states in CoWin system
  */
 async function _get_states() {

@@ -41,5 +41,18 @@ function str_tabular(fieldLens, fieldValues) {
 }
 
 
+/*
+ * Check if given string in the array.
+ */
+function strlist_findindex(strList, findStr) {
+	return strList.findIndex((curStr) => {
+		if (findStr.toUpperCase() === curStr.toUpperCase()) return true;
+		return false;
+		});
+}
+
+
+if (typeof(exports) === 'undefined') exports = {};
 exports.str_tabular = str_tabular
+exports.strlist_findindex = strlist_findindex
 
