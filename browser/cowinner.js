@@ -125,19 +125,23 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 		if (strlist_findindex(db.s_states, state.name) === -1) continue;
 		for(dk in state.districts) {
 			let dist = state.districts[dk];
-			if (dist[db.date] === undefined) continue;
-			if (dist[db.date].vaccenters === undefined) continue;
 			if ((db.s_districts !== undefined) && (strlist_findindex(db.s_districts, dist.name) === -1)) continue;
-			for(vk in dist[db.date].vaccenters) {
-				let vc = dist[db.date].vaccenters[vk];
-				//console.log(vc);
-				for(ik in vc) {
-					vcInst = vc[ik];
-					if ((vacType !== null) && (vacType !== vcInst.vaccine.toUpperCase())) continue;
-					if (vcInst.available_capacity < minCapacity) continue;
-					callback(db, sk, dk, vcInst, passAlong);
-					db['vcCnt'] += 1;
-					db['vacCnt'] += vcInst.available_capacity;
+			for(k in dist) {
+				console.log("DBUG:DBLookupVCs:", state.name, dist.name, k);
+				if (dist[k] === undefined) continue;
+				if (dist[k].vaccenters === undefined) continue;
+				if ((db.s_type === 'STATE_1DAY') && (k !== db.date)) continue;
+				for(vk in dist[k].vaccenters) {
+					let vc = dist[k].vaccenters[vk];
+					//console.log(vc);
+					for(ik in vc) {
+						vcInst = vc[ik];
+						if ((vacType !== null) && (vacType !== vcInst.vaccine.toUpperCase())) continue;
+						if (vcInst.available_capacity < minCapacity) continue;
+						callback(db, sk, dk, vcInst, passAlong);
+						db['vcCnt'] += 1;
+						db['vacCnt'] += vcInst.available_capacity;
+					}
 				}
 			}
 		}
@@ -162,6 +166,7 @@ function _add2vaccenter(oVCs, vcInst) {
  */
 async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
+	console.log("INFO:DBGetVCs4Date:", date);
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
@@ -185,6 +190,7 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
  */
 async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
+	console.log("INFO:DBGetVCs4Week:", date);
 	try {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
