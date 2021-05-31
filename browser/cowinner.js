@@ -303,7 +303,7 @@ async function dbget_vcs(db) {
 			await _dbget_districts(db, state.state_id);
 			for(distK in state.districts) {
 				let dist = state.districts[distK];
-				//update_status(`INFO:DbGetStateVCs: ${dist.dist_id} ${dist.name}`);
+				update_status(`INFO:DbGetVCs: ${dist.district_id} ${dist.name}`);
 				if (dists2Get !== undefined) {
 					if (strlist_findindex(dists2Get, dist.name) === -1) continue;
 				}
