@@ -110,6 +110,8 @@ function vaccenter_string_ex(db, stateId, districtId, vcenterId, vcInstanceId) {
  */
 function dblookup_vaccenters(db, callback, passAlong=null) {
 	let vacType = db.vaccine;
+	let minCapacity = db.minCapacity
+	if (minCapacity === undefined) minCapacity = 1;
 	db['vcCnt'] = 0;
 	db['vacCnt'] = 0;
 	if (vacType === undefined) {
@@ -132,7 +134,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 				for(ik in vc) {
 					vcInst = vc[ik];
 					if ((vacType !== null) && (vacType !== vcInst.vaccine.toUpperCase())) continue;
-					if (vcInst.available_capacity === 0) continue;
+					if (vcInst.available_capacity < minCapacity) continue;
 					callback(db, sk, dk, vcInst, passAlong);
 					db['vcCnt'] += 1;
 					db['vacCnt'] += vcInst.available_capacity;

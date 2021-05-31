@@ -12,6 +12,7 @@ var gState = 'Kerala';
 var gDistrict = null;
 var gVaccine = null;
 var gSType = 'STATE_1DAY';
+var gMinCapacity = 1;
 
 
 function handle_args(cmdArgs) {
@@ -34,6 +35,10 @@ function handle_args(cmdArgs) {
 		}
 		if (cmdArgs[i] === '--stype') {
 			gSType = cmdArgs[i+1];
+			i += 1;
+		}
+		if (cmdArgs[i] === '--minCapacity') {
+			gMinCapacity = Number(cmdArgs[i+1]);
 			i += 1;
 		}
 		i += 1;
@@ -68,7 +73,7 @@ function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 
 
 handle_args(process.argv.slice(2));
-var db = { 'date': gDate, 'vaccine': gVaccine, 's_states': [ gState ] };
+var db = { 'date': gDate, 'vaccine': gVaccine, 's_states': [ gState ], 'minCapacity': gMinCapacity };
 if (gDistrict !== null) db['s_districts'] = [ gDistrict ];
 cw.dbget_vcs(db).then(() => {
 	cw.dblookup_vaccenters(db, handle_vaccenter);
