@@ -42,6 +42,8 @@ function cowinner_init() {
 		if (typeof(process) === "undefined") {
 			console.log("INFO:CoWinner: Running in unknown context");
 		} else {
+			hlpr = require('../browser/hlpr');
+			strlist_findindex = hlpr.strlist_findindex;
 			console.log(`INFO:CoWinner: Running in node [${process.title} ${process.version}]`);
 		}
 	} else {
