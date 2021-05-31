@@ -171,7 +171,7 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
-		update_status(`ERRR:DbGetVacCenters: ${error.message}`, ghErrorStatus);
+		update_status(`ERRR:DbGetVacCenters4Date: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -204,7 +204,7 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 			});
 		var vacCenters = {};
 	} catch(error) {
-		update_status(`ERRR:DbGetVacCenters: ${error.message}`, ghErrorStatus);
+		update_status(`ERRR:DbGetVacCenters4Week: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -243,7 +243,7 @@ async function _dbget_districts(db, stateId) {
 			if (db.states[stateId].districts[dist.district_id] === undefined) db.states[stateId].districts[dist.district_id] = {};
 			db.states[stateId].districts[dist.district_id]['name'] = dist.district_name;
 			db.states[stateId].districts[dist.district_id]['district_id'] = dist.district_id;
-			update_status(`INFO:_DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
+			//update_status(`INFO:_DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
 		}
 	} catch(error) {
 		update_status(`ERRR:_DbGetDistricts: ${error.message}`, ghErrorStatus);
@@ -257,7 +257,7 @@ async function _dbget_states(db) {
 		let data = await _get_states();
 		for(stateK in data.states) {
 			let state = data.states[stateK];
-			update_status(`INFO:_DbGetStates: ${state.state_id} ${state.state_name}`);
+			//update_status(`INFO:_DbGetStates: ${state.state_id} ${state.state_name}`);
 			let dbState = db.states[state.state_id];
 			if (dbState === undefined) dbState = {};
 			db.states[state.state_id] = dbState;
@@ -296,7 +296,7 @@ async function dbget_vcs(db) {
 		await _dbget_states(db);
 		for(stateK in db.states) {
 			let state = db.states[stateK];
-			update_status(`INFO:DbGetVCs: ${state.state_id} ${state.name}`);
+			update_status(`INFO:DbGetVCs:State: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
 				if (strlist_findindex(states2Get, state.name) === -1) continue;
 			}
@@ -311,7 +311,7 @@ async function dbget_vcs(db) {
 				if (dists2Get !== undefined) {
 					if (strlist_findindex(dists2Get, dist.name) === -1) continue;
 				}
-				update_status(`INFO:DbGetVCs: ${dist.district_id} ${dist.name}`);
+				update_status(`INFO:DbGetVCs:District: ${dist.district_id} ${dist.name}`);
 				if (sType === 'STATE_1DAY')
 					await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
 				else
