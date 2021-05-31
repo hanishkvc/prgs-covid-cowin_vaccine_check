@@ -208,6 +208,8 @@ function cache_not_fresh(db, stateId) {
 	var prevTime = db.states[stateId][db.date]
 	if (prevTime !== undefined) prevTime = prevTime.time;
 	var curTime = Date.now()
+	var sType = db['s_type'];
+	if (sType !== 'STATE_1DAY') prevTime = undefined;
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
@@ -216,7 +218,10 @@ function cache_not_fresh(db, stateId) {
 		}
 		console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name, deltaSecs);
 	} else {
-		console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
+		if (sType === 'STATE_1DAY')
+			console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
+		else
+			console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name);
 	}
 	db.states[stateId][db.date] = {}
 	db.states[stateId][db.date]['time'] = curTime;
@@ -278,9 +283,10 @@ async function _dbget_states(db) {
  * cowin server to some extent, is handled only for STATE_1DAY type queries.
  */
 async function dbget_vcs(db) {
-	states2Get = db['s_states'];
-	dists2Get = db['s_districts'];
-	sType = db['s_type'];
+	var states2Get = db['s_states'];
+	var dists2Get = db['s_districts'];
+	if (db['s_type'] === undefined) db['s_type'] = 'STATE_1DAY';
+	var sType = db['s_type'];
 	try {
 		await _dbget_states(db);
 		for(stateK in db.states) {
@@ -290,7 +296,7 @@ async function dbget_vcs(db) {
 				if (strlist_findindex(states2Get, state.name) === -1) continue;
 			}
 			let cb = db.cb_dbgetstates_statedone;
-			if ((sType === 'STATE_1DAY') && cache_not_fresh(db, state.state_id)) {
+			if (cache_not_fresh(db, state.state_id)) {
 				if (cb !== undefined) cb(db, state.state_id, "CACHED");
 				continue;
 			}
