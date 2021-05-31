@@ -176,6 +176,11 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 }
 
 
+/*
+ * Get all vaccine centers for the given state-district, inturn for next 7 days,
+ * provided the corresponding data is availabe on cowin server, at the time of query.
+ * date arg or db['date'] : the date from which vaccine centers should be looked up.
+ */
 async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	try {
@@ -303,11 +308,14 @@ async function dbget_vcs(db) {
 			await _dbget_districts(db, state.state_id);
 			for(distK in state.districts) {
 				let dist = state.districts[distK];
-				update_status(`INFO:DbGetVCs: ${dist.district_id} ${dist.name}`);
 				if (dists2Get !== undefined) {
 					if (strlist_findindex(dists2Get, dist.name) === -1) continue;
 				}
-				await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
+				update_status(`INFO:DbGetVCs: ${dist.district_id} ${dist.name}`);
+				if (sType === 'STATE_1DAY')
+					await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
+				else
+					await dbget_vaccenters_forweek(db, state.state_id, dist.district_id);
 			}
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
