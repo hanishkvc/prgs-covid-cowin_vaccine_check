@@ -208,7 +208,10 @@ The optional arguments are
 
       Fetch details about VC slots for the specified district only in DISTRICT_1WEEK mode.
 
-NOTE: stype related semantic requires to be implemented fully yet.
+NOTE: For now the SType is used to switch between forDate and forWeek related queries,
+but STATE_1DAY doesnt ignore districts filtering, when fetching in dbget_vcs, so it fetches
+data only for the specified districts, if any, instead of for all districts wrt STATE_1DAY
+mode.
 
 
 ChangeLog
@@ -269,11 +272,19 @@ However nodejs node-fetch wont work without UserAgent. Need to add a
 generic workaround which can handle both cases from same code.
 
 
-v20210601IST0130
+v20210601IST0329
 ===================
 
 Handle USerAgent as reqd wrt nodejs environment and browser environment.
 
+Decouple fetching of data from using of same.
+
 Add core logic related to fetching data about VC slots for upto a week,
 for a specified district using the corresponding cowin public api.
+Inturn the same is exposed to user through cmdline wrt NodeJS version.
+
+Control SType, District, minCapacity from cmdline wrt NJS version of
+the logic.
+
+Tabular console logging wrt search result wrt NJS version of logic.
 

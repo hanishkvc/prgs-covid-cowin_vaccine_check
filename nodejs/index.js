@@ -73,7 +73,7 @@ function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 
 
 handle_args(process.argv.slice(2));
-var db = { 'date': gDate, 'vaccine': gVaccine, 's_states': [ gState ], 'minCapacity': gMinCapacity };
+var db = { 's_type': gSType, 'date': gDate, 'vaccine': gVaccine, 's_states': [ gState ], 'minCapacity': gMinCapacity };
 if (gDistrict !== null) db['s_districts'] = [ gDistrict ];
 cw.dbget_vcs(db).then(() => {
 	cw.dblookup_vaccenters(db, handle_vaccenter);

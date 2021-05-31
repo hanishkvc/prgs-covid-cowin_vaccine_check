@@ -131,7 +131,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 			let dist = state.districts[dk];
 			if ((db.s_districts !== undefined) && (strlist_findindex(db.s_districts, dist.name) === -1)) continue;
 			for(k in dist) {
-				console.log("DBUG:DBLookupVCs:", state.name, dist.name, k);
+				//console.log("DBUG:DBLookupVCs:", state.name, dist.name, k);
 				if (dist[k] === undefined) continue;
 				if (dist[k].vaccenters === undefined) continue;
 				if ((db.s_type === STYPE_STATE1DAY) && (k !== db.date)) continue;
@@ -199,7 +199,7 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
 		oVCInsts.centers.forEach(vc => {
-			console.log(vc.name);
+			//console.log(vc.name);
 			let sessions = vc.sessions;
 			delete(vc.sessions);
 			sessions.forEach(vcInst => {
