@@ -13,7 +13,7 @@
  * 		districts (bunch of district objects)
  * 			district_id
  * 			name
- * 			date
+ * 			date (there could be multiple such dates)
  * 				vaccenters (bunch of vaccine center objects)
  * 					vaccenterInstances (kind of array of same vaccine center instances)
  * 						center_id
@@ -26,6 +26,10 @@
  * 							Ex: VC1_45+_Covishield, VC1_18+_Covishield, VC1_45+_Covaxin, ...
  *
  */
+
+
+const STYPE_STATE1DAY = "STATE_1DAY"
+const STYPE_DISTRICT1WEEK = "DISTRICT_1WEEK"
 
 
 const srvr = "https://cdn-api.co-vin.in/api";
@@ -130,7 +134,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 				console.log("DBUG:DBLookupVCs:", state.name, dist.name, k);
 				if (dist[k] === undefined) continue;
 				if (dist[k].vaccenters === undefined) continue;
-				if ((db.s_type === 'STATE_1DAY') && (k !== db.date)) continue;
+				if ((db.s_type === STYPE_STATE1DAY) && (k !== db.date)) continue;
 				for(vk in dist[k].vaccenters) {
 					let vc = dist[k].vaccenters[vk];
 					//console.log(vc);
@@ -222,7 +226,7 @@ function cache_not_fresh(db, stateId) {
 	if (prevTime !== undefined) prevTime = prevTime.time;
 	var curTime = Date.now()
 	var sType = db['s_type'];
-	if (sType !== 'STATE_1DAY') prevTime = undefined;
+	if (sType !== STYPE_STATE1DAY) prevTime = undefined;
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
@@ -231,7 +235,7 @@ function cache_not_fresh(db, stateId) {
 		}
 		console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name, deltaSecs);
 	} else {
-		if (sType === 'STATE_1DAY')
+		if (sType === STYPE_STATE1DAY)
 			console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
 		else
 			console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name);
@@ -298,7 +302,7 @@ async function _dbget_states(db) {
 async function dbget_vcs(db) {
 	var states2Get = db['s_states'];
 	var dists2Get = db['s_districts'];
-	if (db['s_type'] === undefined) db['s_type'] = 'STATE_1DAY';
+	if (db['s_type'] === undefined) db['s_type'] = STYPE_STATE1DAY;
 	var sType = db['s_type'];
 	try {
 		await _dbget_states(db);
@@ -320,7 +324,7 @@ async function dbget_vcs(db) {
 					if (strlist_findindex(dists2Get, dist.name) === -1) continue;
 				}
 				update_status(`INFO:DbGetVCs:District: ${dist.district_id} ${dist.name}`);
-				if (sType === 'STATE_1DAY')
+				if (sType === STYPE_STATE1DAY)
 					await dbget_vaccenters_fordate(db, state.state_id, dist.district_id);
 				else
 					await dbget_vaccenters_forweek(db, state.state_id, dist.district_id);
