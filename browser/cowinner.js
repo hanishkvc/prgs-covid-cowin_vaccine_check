@@ -285,7 +285,7 @@ async function dbget_vcs(db) {
 		await _dbget_states(db);
 		for(stateK in db.states) {
 			let state = db.states[stateK];
-			update_status(`INFO:DbGetStateVCs: ${state.state_id} ${state.name}`);
+			update_status(`INFO:DbGetVCs: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
 				if (strlist_findindex(states2Get, state.name) === -1) continue;
 			}
@@ -306,7 +306,8 @@ async function dbget_vcs(db) {
 			if (cb !== undefined) cb(db, state.state_id, "FRESH");
 		}
 	} catch(error) {
-		update_status(`ERRR:DbGetStateVCs: ${error.message}`, ghErrorStatus);
+		update_status(`ERRR:DbGetVCs: ${error.message}`, ghErrorStatus);
+		console.error(error);
 	}
 }
 
