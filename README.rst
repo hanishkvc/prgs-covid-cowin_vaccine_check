@@ -2,7 +2,7 @@
 CoWin Vaccine Availability Status Check
 ##########################################
 Author: HanishKVC
-Version: v20210526IST0122
+Version: v20210601IST0103
 
 Overview
 ##########
@@ -18,15 +18,15 @@ center, where the needed specific vaccine is hopefully available, this is especi
 for those needing 2nd dose and that too for vaccines with lower production capacity.
 
 So this simple program has been created to try and help with the same. It returns the list of
-vaccination centers for the specified state, which have vaccines available on the given date,
-as of the moment when this logic is run. The query could be either manually triggered each
-time as required, or a auto repeating search can be enabled (wrt browser mode). The results
-are shown on the screen (web page or terminal as the case maybe) as well as optionally local
-notification (wrt browser mode) may be triggered.
+vaccination centers for the specified state, which have vaccines available on the given date
+or the given week, as the case maybe, as of the moment when this logic is run. The query could
+be either manually triggered each time as required, or a auto repeating search can be enabled
+(wrt browser mode). The results are shown on the screen (web page or terminal as the case maybe)
+as well as optionally local notification (wrt browser mode) may be triggered.
 
 This is a minimal keep it simple and stupid (kiss) based logic, to get the required data and
 look at it in a efficient way by caching it temporarily for a short period, so as to avoid
-overloading of the server.
+overloading of the server. Also it tries not to be unfair by querying only once every 10 mins.
 
 This uses the public api provided by the govt to query the CoWin's servers.
 
@@ -49,7 +49,8 @@ by cowin/govt team) old, so there is a possibility that even thou this shows tha
 is available at a given place, in reality it might have been already booked by someone.
 
 One requires to go to the cowin site to cross verify the latest status as well as to book the
-slot. This program mainly helps with getting availability status wrt a full state in one shot.
+slot. This program mainly helps with getting availability status wrt a full state in one shot
+and or to query at periodic intervals.
 
 The cowin servers rate limit queries into their public apis' so that people dont abuse it nor
 overload it. So dont search/run the logic many times with in any 5 minute window, else the cowin
@@ -102,6 +103,9 @@ GUI systems notifications panel.
    simple js code. Why oh why google u arent taking such a path??? Same is also applicable
    to firefox.
 
+The query vaccine centers wrt a specific district in the DISTRICT_1WEEK mode, doesnt cache
+the search results, as of now. Currently this is enabled for nodejs version of the logic.
+
 
 Program Versions
 ##################
@@ -129,7 +133,7 @@ There is also a periodic auto repeating search option, which will trigger the qu
 the cowin server periodically without user requiring to explicitly press the search button
 each time. This is currently setup to do the periodic search once every 10 minutes. However
 do note that this logic just updates the result shown on screen, and possibly notifies the
-user using local(desktop/mobile) notification(experimental). User needs to monitor the same
+user using local desktop notification(experimental). User needs to monitor the same
 (page and notification) and act on it as they see fit. Also this auto repeat logic may get
 paused by the browser, as noted previously.
 
@@ -178,13 +182,33 @@ NodeJS based
 =================
 
 If one runs the commandline nodejs based version of the program, then one can get the list of
-vaccine centers (with vaccine availability) wrt the specified state and specified date.
+vaccine centers (with vaccine availability) wrt the specified state and specified date/week.
 
-node index.js --state "State Name" \[--date DD-MM-YYYY\] \[--vaccine vaccineName\]
+node index.js --state "State Name" [optional arguments]
 
-If date is not specified, then the current date is used.
+The optional arguments are
 
-If vaccine is not specified, get vac centers for all vaccines available on the specified date.
+   --stype <STATE_1DAY|DISTRICT_1WEEK>
+
+      STATE_1DAY: fetch all VCs in the specified state for the give date, across all districts OR
+
+      DISTRICT_1WEEK: fetch VC slot availability for upto 1 week for the specified district.
+
+   --date DD-MM-YYYY
+
+      If date is not specified, then the current date is used.
+
+   --vaccine vaccineName
+
+      If vaccine is not specified, get vac centers for all vaccines available on the specified date.
+
+   --district "District Name"
+
+      Filter the VCs that are shown wrt STATE_1DAY Mode to those belonging to specified district.
+
+      Fetch details about VC slots for the specified district only in DISTRICT_1WEEK mode.
+
+NOTE: stype related semantic requires to be implemented fully yet.
 
 
 ChangeLog
@@ -236,10 +260,20 @@ v20210526IST0210
 
 Experimental NotifyMe logic, which works only in some setups.
 
+   Rather it mainly works on desktops/laptops and not on mobiles/tablets.
+
 Bit more informative Done Status message.
 
 Avoid UserAgent wrt Fetch request headers, else Firefox's fetch fails.
 However nodejs node-fetch wont work without UserAgent. Need to add a
 generic workaround which can handle both cases from same code.
 
+
+v20210601IST0130
+===================
+
+Handle USerAgent as reqd wrt nodejs environment and browser environment.
+
+Add core logic related to fetching data about VC slots for upto a week,
+for a specified district using the corresponding cowin public api.
 
