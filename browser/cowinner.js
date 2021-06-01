@@ -221,27 +221,23 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 }
 
 
-function cache_not_fresh(db, stateId) {
-	var prevTime = db.states[stateId][db.date]
-	if (prevTime !== undefined) prevTime = prevTime.time;
+function cache_not_fresh(acha, from, forMe) {
+	var prevTime = acha.time;
 	var curTime = Date.now()
-	var sType = db['s_type'];
-	if (sType !== STYPE_STATE1DAY) prevTime = undefined;
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
 		if (deltaSecs < 300) {
-			console.log("INFO:CacheNotFresh: Too soon for", db.states[stateId].name, deltaSecs);
+			console.log(`INFO:CacheNotFresh:${from}: Too soon for ${forMe}: ${deltaSecs}`);
 			return true;
 		}
-		console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name, deltaSecs);
+		console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}: ${deltaSecs}`);
 	} else {
 		if (sType === STYPE_STATE1DAY)
-			console.log("INFO:CacheNotFresh: Fetching for 1st time for", db.states[stateId].name);
+			console.log(`INFO:CacheNotFresh:${from}: Fetching for 1st time for ${forMe}`);
 		else
-			console.log("INFO:CacheNotFresh: Fetching fresh data for", db.states[stateId].name);
+			console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}`);
 	}
-	db.states[stateId][db.date] = {}
-	db.states[stateId][db.date]['time'] = curTime;
+	acha['time'] = curTime;
 	return false;
 }
 
@@ -266,6 +262,7 @@ async function _dbget_districts(db, stateId) {
 async function _dbget_states(db) {
 	if (db['states'] === undefined) db['states'] = {};
 	try {
+		if (cache_not_fresh(db, '_DBGetStates', 'India')) return;
 		let data = await _get_states();
 		for(stateK in data.states) {
 			let state = data.states[stateK];
@@ -277,6 +274,7 @@ async function _dbget_states(db) {
 			db.states[state.state_id]['state_id'] = state.state_id;
 		}
 	} catch(error) {
+		db.time = undefined;
 		update_status(`ERRR:_DbGetStates: ${error.message}`, ghErrorStatus);
 	}
 }
