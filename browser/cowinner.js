@@ -172,17 +172,26 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
 	console.log("INFO:DBGetVCs4Date:", date);
 	try {
+		let theDist = db.states[stateId].districts[districtId][date];
+		if (theDist === undefined) {
+			db.states[stateId].districts[districtId][date] = {}
+			theDist = db.states[stateId].districts[districtId][date];
+		}
+		if (cache_not_fresh(theDist, 'DBGetVCs4Date', `${db.states[stateId].districts[districtId].name}:${date}`)) {
+			db.GetVCsFetchStatus = "CACHED";
+			return;
+		}
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
 		var vacCenters = {};
-		db.states[stateId].districts[districtId][date] = {}
 		db.states[stateId].districts[districtId][date]['vaccenters'] = vacCenters;
 		oVCInsts.sessions.forEach(vcInst => {
 			_add2vaccenter(vacCenters, vcInst);
 			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
-		update_status(`ERRR:DbGetVacCenters4Date: ${error.message}`, ghErrorStatus);
+		theDist.time = undefined;
+		update_status(`ERRR:DbGetVCs4Date: ${error.message}`, ghErrorStatus);
 	}
 }
 
@@ -300,6 +309,7 @@ async function _dbget_states(db) {
  * cowin server to some extent, is handled only for STATE_1DAY type queries.
  */
 async function dbget_vcs(db) {
+	db['GetVCsFetchStatus'] = "FRESH Maybe";
 	var states2Get = db['s_states'];
 	var dists2Get = db['s_districts'];
 	if (db['s_type'] === undefined) db['s_type'] = STYPE_STATE1DAY;
@@ -311,11 +321,6 @@ async function dbget_vcs(db) {
 			update_status(`INFO:DbGetVCs:State: ${state.state_id} ${state.name}`);
 			if (states2Get !== undefined) {
 				if (strlist_findindex(states2Get, state.name) === -1) continue;
-			}
-			let cb = db.cb_dbgetstates_statedone;
-			if (cache_not_fresh(db, state.state_id)) {
-				if (cb !== undefined) cb(db, state.state_id, "CACHED");
-				continue;
 			}
 			await _dbget_districts(db, state.state_id);
 			for(distK in state.districts) {
@@ -329,7 +334,8 @@ async function dbget_vcs(db) {
 				else
 					await dbget_vaccenters_forweek(db, state.state_id, dist.district_id);
 			}
-			if (cb !== undefined) cb(db, state.state_id, "FRESH");
+			let cb = db.cb_dbgetstates_statedone;
+			if (cb !== undefined) cb(db, state.state_id, db.GetVCsFetchStatus);
 		}
 	} catch(error) {
 		update_status(`ERRR:DbGetVCs: ${error.message}`, ghErrorStatus);
