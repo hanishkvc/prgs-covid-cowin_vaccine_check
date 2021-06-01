@@ -7,6 +7,7 @@
 
 var elMainTbl = document.getElementById("maintbl");
 var elState = document.getElementById("vstate");
+var elDistrict = document.getElementById("vdistrict");
 var elDate = document.getElementById("vdate");
 var elNotify = document.getElementById("vnotify");
 var elSearch = document.getElementById("vsearch");
@@ -46,6 +47,26 @@ function tbl_append(el, index, datas, part="tbody") {
 		tR.appendChild(tD);
 	});
 	tB.appendChild(tR);
+}
+
+
+function select_clear(el) {
+	let numOptions = el.length;
+	for(i=0; i < numOptions; i++) {
+		el.remove(i);
+	}
+}
+
+
+function select_fromdb(el, acha, key) {
+	let to = document.createElement("option");
+	to.textContent = "ANY";
+	el.add(to);
+	for(ck in acha[key]) {
+		to = document.createElement("option");
+		to.textContent = acha[key][ck].name;
+		el.add(to);
+	}
 }
 
 
@@ -129,6 +150,14 @@ function get_searchparams() {
 }
 
 
+function state_changed(ev) {
+	let tState = elState.value;
+	let stateId = 17;
+	select_clear(elDistrict);
+	select_fromdb(elDistrict, db.states[stateId], 'districts');
+}
+
+
 function search_clicked(ev) {
 	get_searchparams();
 	var bNotifyMode = false;
@@ -178,6 +207,7 @@ function start_here() {
 	elSearch.onclick = search_clicked;
 	elAuto.onclick = auto_clicked;
 	elNotify.onclick = notify_clicked;
+	elState.onchange = state_changed;
 }
 
 
