@@ -66,17 +66,18 @@
 				<td> Date </td> <td> <input type="date" name="vdate" id="vdate"/> </td>
 			</tr>
 			<tr>
+				<td> District </td> <td> <input type="text" name="vdistrict" id="vdistrict" list="districts-list"/> </td>
 				<td> Vaccine </td>
 				<td> <select name="vvac" id="vvac">
 						<option value="ANY"> ANY </option>
 						<option value="Covishield"> Covishield </option>
 						<option value="Covaxin"> Covaxin </option>
-					</select> </td>
-				<td> </td>
-				<td>
-					<button id="vsearch" name="vsearch" class="inlinebtn"> Search </button>
-					<button id="vauto" name="vauto" class="inlinebtn"> Start Auto </button>
+					</select>
 				</td>
+			</tr>
+			<tr>
+				<td> </td> <td> <button id="vsearch" name="vsearch" class="inlinebtn"> Search </button> </td>
+				<td> </td> <td> <button id="vauto" name="vauto" class="inlinebtn"> Start Auto </button> </td>
 			</tr>
 			</tbody>
 			</table>
