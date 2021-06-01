@@ -178,6 +178,7 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 		}
 		if (cache_not_fresh(theDist, 'DBGetVCs4Date', `${db.states[stateId].districts[districtId].name}:${date}`)) {
 			db.GetVCsFetchStatus = "CACHED";
+			if (db.GetVCsFetchTime > theDist.time) db.GetVCsFetchTime = theDist.time;
 			return;
 		}
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/findByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
@@ -305,7 +306,8 @@ async function _dbget_states(db) {
  * cowin server to some extent, is handled only for STATE_1DAY type queries.
  */
 async function dbget_vcs(db) {
-	db['GetVCsFetchStatus'] = "FRESH Maybe";
+	db['GetVCsFetchStatus'] = "FRESH";
+	db['GetVCsFetchTime'] = Date.now();
 	var states2Get = db['s_states'];
 	var dists2Get = db['s_districts'];
 	if (db['s_type'] === undefined) db['s_type'] = STYPE_STATE1DAY;
