@@ -245,6 +245,7 @@ function cache_not_fresh(acha, from, forMe) {
 async function _dbget_districts(db, stateId) {
 	if (db.states[stateId]['districts'] === undefined) db.states[stateId]['districts'] = {};
 	try {
+		if (cache_not_fresh(db.states[stateId], '_DBGetDists', db.states[stateId].name)) return;
 		let oDists = await _get_districts(stateId);
 		for(distK in oDists.districts) {
 			let dist = oDists.districts[distK];
@@ -254,6 +255,7 @@ async function _dbget_districts(db, stateId) {
 			//update_status(`INFO:_DbGetDistricts: ${dist.district_id} ${dist.district_name}`);
 		}
 	} catch(error) {
+		db.states[stateId].time = undefined;
 		update_status(`ERRR:_DbGetDistricts: ${error.message}`, ghErrorStatus);
 	}
 }
