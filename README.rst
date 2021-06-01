@@ -292,6 +292,7 @@ Tabular console logging wrt search result wrt NJS version of logic.
 v20210601IST2050
 ==================
 
-Local multi level caching.
+Local multi level caching allowing caching of states/districts/vcs
+wrt 4date and 4week fetchs.
 
 

@@ -204,8 +204,8 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
  */
 async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
-	console.log("INFO:DBGetVCs4Week:", date);
 	try {
+		if (cache_not_fresh(db.states[stateId].districts[districtId], 'DBGetVCs4Week', `${db.states[stateId].districts[districtId].name}:${date}`)) return;
 		let resp = await fetch(`${srvr}/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`, fetchOptions)
 		let oVCInsts = await resp.json();
 		oVCInsts.centers.forEach(vc => {
@@ -226,7 +226,8 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 			});
 		var vacCenters = {};
 	} catch(error) {
-		update_status(`ERRR:DbGetVacCenters4Week: ${error.message}`, ghErrorStatus);
+		db.states[stateId].districts[districtId].time = undefined;
+		update_status(`ERRR:DbGetVCs4Week: ${error.message}`, ghErrorStatus);
 	}
 }
 
