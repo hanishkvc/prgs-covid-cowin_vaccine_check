@@ -230,8 +230,8 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 }
 
 
-function cache_not_fresh(acha, from, forMe) {
-	var prevTime = acha.time;
+function cache_not_fresh(acha, from, forMe, timeKey='time') {
+	var prevTime = acha[timeKey];
 	var curTime = Date.now()
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
@@ -243,7 +243,7 @@ function cache_not_fresh(acha, from, forMe) {
 	} else {
 		console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}`);
 	}
-	acha['time'] = curTime;
+	acha[timeKey] = curTime;
 	return false;
 }
 
