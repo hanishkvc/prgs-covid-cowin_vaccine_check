@@ -288,3 +288,10 @@ the logic.
 
 Tabular console logging wrt search result wrt NJS version of logic.
 
+
+v20210601IST2050
+==================
+
+Local multi level caching.
+
+
