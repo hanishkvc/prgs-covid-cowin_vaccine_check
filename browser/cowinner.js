@@ -170,7 +170,6 @@ function _add2vaccenter(oVCs, vcInst) {
  */
 async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
-	console.log("INFO:DBGetVCs4Date:", date);
 	try {
 		let theDist = db.states[stateId].districts[districtId][date];
 		if (theDist === undefined) {
@@ -241,10 +240,7 @@ function cache_not_fresh(acha, from, forMe) {
 		}
 		console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}: ${deltaSecs}`);
 	} else {
-		if (sType === STYPE_STATE1DAY)
-			console.log(`INFO:CacheNotFresh:${from}: Fetching for 1st time for ${forMe}`);
-		else
-			console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}`);
+		console.log(`INFO:CacheNotFresh:${from}: Fetching fresh data for ${forMe}`);
 	}
 	acha['time'] = curTime;
 	return false;
