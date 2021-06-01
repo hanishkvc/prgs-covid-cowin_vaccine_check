@@ -121,8 +121,8 @@ function get_searchparams() {
 	gDate = `${tDate[2]}-${tDate[1]}-${tDate[0]}`;
 	gVac = elVac.value;
 	console.log("INFO:SearchParams:", gStates, gDate, gVac);
-	tP = document.getElementById("states");
-	tP.textContent = `Showing data for selected states: ${gStates}`;
+	tP = document.getElementById("location");
+	tP.textContent = `Showing data for: ${gStates}`;
 	db['date'] = gDate;
 	db['vaccine'] = gVac;
 	db['s_states'] = gStates;
