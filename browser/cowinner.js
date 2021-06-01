@@ -170,8 +170,9 @@ function _add2vaccenter(oVCs, vcInst) {
  */
 async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
+	let theDist;
 	try {
-		let theDist = db.states[stateId].districts[districtId][date];
+		theDist = db.states[stateId].districts[districtId][date];
 		if (theDist === undefined) {
 			db.states[stateId].districts[districtId][date] = {}
 			theDist = db.states[stateId].districts[districtId][date];
@@ -190,8 +191,8 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 			//console.log("INFO:DbGetVacCenters:", vaccenter_string(vcInst, db.states[stateId].name, db.states[stateId].districts[districtId].name));
 			});
 	} catch(error) {
-		theDist.time = undefined;
 		update_status(`ERRR:DbGetVCs4Date: ${error.message}`, ghErrorStatus);
+		theDist.time = undefined;
 	}
 }
 
