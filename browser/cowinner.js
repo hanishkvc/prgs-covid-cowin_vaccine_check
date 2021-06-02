@@ -164,7 +164,7 @@ function _add2vaccenter(oVCs, vcInst) {
 			if ((tVC.date === vcInst.date)
 				&& (tVC.min_age_limit === vcInst.min_age_limit)
 				&& (tVC.vaccine === vcInst.vaccine)) {
-				//console.log("DBUG:Add2VC:Skipping:", vcInst);
+				console.log("DBUG:Add2VC:Skipping:", vcInst);
 				tVC.available_capacity = vcInst.available_capacity;
 				tVC.available_capacity_dose1 = vcInst.available_capacity_dose1;
 				tVC.available_capacity_dose2 = vcInst.available_capacity_dose2;
@@ -217,6 +217,7 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
  */
 async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	if (date === null) date = db['date'];
+	let newDate = {};
 	try {
 		let cacheTimeKey = `ctime_${date}`;
 		if (cache_not_fresh(db.states[stateId].districts[districtId], 'DBGetVCs4Week', `${db.states[stateId].districts[districtId].name}:${date}`, cacheTimeKey)) {
@@ -237,6 +238,9 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 				lVC = Object.assign(lVC, vcInst);
 				if (db.states[stateId].districts[districtId][lVC.date] === undefined) {
 					db.states[stateId].districts[districtId][lVC.date] = {};
+				}
+				if (newDate[lVC.date] === undefined) {
+					newDate[lVC.date] = true;
 					db.states[stateId].districts[districtId][lVC.date]['vaccenters'] = {};
 				}
 				let vacCenters = db.states[stateId].districts[districtId][lVC.date]['vaccenters'];
