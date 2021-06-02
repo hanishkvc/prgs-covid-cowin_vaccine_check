@@ -158,6 +158,19 @@ function _add2vaccenter(oVCs, vcInst) {
 	if (vc === undefined) {
 		vc = new Array();
 		oVCs[vcInst.center_id] = vc;
+	} else {
+		for(i in vc) {
+			let tVC = vc[i];
+			if ((tVC.date === vcInst.date)
+				&& (tVC.min_age_limit === vcInst.min_age_limit)
+				&& (tVC.vaccine === vcInst.vaccine)) {
+				//console.log("DBUG:Add2VC:Skipping:", vcInst);
+				tVC.available_capacity = vcInst.available_capacity;
+				tVC.available_capacity_dose1 = vcInst.available_capacity_dose1;
+				tVC.available_capacity_dose2 = vcInst.available_capacity_dose2;
+				return vc.length-1;
+			}
+		}
 	}
 	vc.push(vcInst);
 	return vc.length-1;
@@ -219,7 +232,7 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 			let sessions = vc.sessions;
 			delete(vc.sessions);
 			sessions.forEach(vcInst => {
-				console.log(`DBUG:GetVCs4Week:1:${vc.center_id}, ${vc.name}, ${vcInst.date} [${vc.date}], ${vcInst.min_age_limit}+`);
+				//console.log(`DBUG:GetVCs4Week:1:${vc.center_id}, ${vc.name}, ${vcInst.date} [${vc.date}], ${vcInst.min_age_limit}+`);
 				let lVC = Object.assign({}, vc);
 				lVC = Object.assign(lVC, vcInst);
 				if (db.states[stateId].districts[districtId][lVC.date] === undefined) {
