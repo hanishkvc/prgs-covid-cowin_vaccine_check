@@ -219,15 +219,21 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 			let sessions = vc.sessions;
 			delete(vc.sessions);
 			sessions.forEach(vcInst => {
-				for(k in vcInst) {
-					vc[k] = vcInst[k];
+				console.log(`DBUG:GetVCs4Week:1:${vc.center_id}, ${vc.name}, ${vcInst.date}, ${vcInst.min_age_limit}`);
+				let lVC = {}
+				for(k in vc) {
+					lVC[k] = vc[k];
 				}
+				for(k in vcInst) {
+					lVC[k] = vcInst[k];
+				}
+				console.log(`DBUG:GetVCs4Week:2:${vc.center_id}, ${vc.name}, ${vc.date}, ${vc.min_age_limit}`);
 				if (db.states[stateId].districts[districtId][vc.date] === undefined) {
 					db.states[stateId].districts[districtId][vc.date] = {};
 					db.states[stateId].districts[districtId][vc.date]['vaccenters'] = {};
 				}
 				let vacCenters = db.states[stateId].districts[districtId][vc.date]['vaccenters'];
-				_add2vaccenter(vacCenters, vc);
+				_add2vaccenter(vacCenters, lVC);
 				});
 			});
 		var vacCenters = {};
