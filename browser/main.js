@@ -131,7 +131,7 @@ function do_search(bNotifyMode) {
 			notTitle = `Vac: ${db.vaccine}, Qty: ${db.vacCnt}, VacCenters: ${db.vcCnt}`
 			let tDistrict = db.s_districts;
 			if (tDistrict === undefined) tDistrict = 'ANY';
-			notBody = `State: ${db.s_states}, Dist: ${tDistrict}, Date: ${db.date}`
+			notBody = `State: ${db.s_states}, Dist: ${tDistrict}, Date: ${db.date}, SType: ${db.s_type}`
 			update_status("Done: "+msg);
 			if (bNotifyMode && db.bNotifyMe) notify_user(notTitle, notBody);
 		});
