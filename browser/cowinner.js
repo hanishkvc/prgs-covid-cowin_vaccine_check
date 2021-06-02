@@ -290,6 +290,15 @@ async function _dbget_states(db) {
 }
 
 
+function db_stateid(db, stateName) {
+	if (db.states === undefined) return -1;
+	for(k in db.states) {
+		if (db.states[k].name === stateName) return db.states[k].state_id;
+	}
+	return -1;
+}
+
+
 /*
  * Get details about vaccine availability wrt specified list of states
  * db : the object which will contain the details

@@ -152,9 +152,17 @@ function get_searchparams() {
 
 function state_changed(ev) {
 	let tState = elState.value;
-	let stateId = 17;
-	select_clear(elDistrict);
-	select_fromdb(elDistrict, db.states[stateId], 'districts');
+	_dbget_states(db).then(() => {
+		let stateId = db_stateid(db, tState);
+		if (stateId === -1) {
+			update_status("ERRR: Unknown State", elStatusAlert);
+			return;
+		}
+		_dbget_districts(db, stateId).then(() => {
+			select_clear(elDistrict);
+			select_fromdb(elDistrict, db.states[stateId], 'districts');
+			});
+		});
 }
 
 
