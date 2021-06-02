@@ -184,7 +184,7 @@ function district_changed(ev) {
 		if (tDate < 10) tDate = `0${tDate}`;
 		let sDate = `${tYear}-${tMonth}-${tDate}`;
 		elDate.value = sDate;
-		update_status(`INFO: Date reset to today ${sDate}`, elStatusAlert);
+		update_status(`INFO: Date reset to today ${sDate}, change if needed`, elStatusAlert);
 	}
 }
 

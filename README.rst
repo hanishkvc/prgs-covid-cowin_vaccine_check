@@ -2,7 +2,7 @@
 CoWin Vaccine Availability Status Check
 ##########################################
 Author: HanishKVC
-Version: v20210601IST0103
+Version: v20210602IST1908
 
 Overview
 ##########
@@ -58,10 +58,10 @@ server will potentially disable access to your ip for few minutes, so you wont g
 After few minutes the access will be restored and you can get the data again.
 
 To help mitigate this to some extent, and also to be bit efficient and less loading on the server,
-the logic caches data wrt any given state for upto 5 mins by default. So if a user tries to requery
-wrt the same state, it wont try to fetch the data from the server. However if user tries to query
-wrt a new state, then it will fetch fresh data, provided previously data had not been fetched for
-that state within the past 5 minutes.
+the logic caches most of the data fetched from the server (be it wrt states/districts/vaccenters)
+for upto 5 mins by default. So if a user tries to requery the same, it wont try to fetch the data
+from the server. However if user tries to query wrt a new state/district/date, then it will fetch
+fresh data, provided previously data had not been fetched for the same within the past 5 minutes.
 
 NOTE: The local temporary caching is mainly useful for the modular browser based version of this
 logic. The NodeJS based version currently cant make use of this caching capability, as it exits
@@ -103,8 +103,13 @@ GUI systems notifications panel.
    simple js code. Why oh why google u arent taking such a path??? Same is also applicable
    to firefox.
 
-The query vaccine centers wrt a specific district in the DISTRICT_1WEEK mode, doesnt cache
-the search results, as of now. Currently this is enabled for nodejs version of the logic.
+The query vaccine centers wrt a specific state-district in the DISTRICT_1WEEK mode, doesnt
+use the cached data, if week being checked for doesnt fully overlap the week corresponding
+to the cached data.
+
+The initial parallel asyncronous logic has been changed to a serialised syncronous query
+chain logic. So it doesnt parallelise the co-operative multitasking logic of javascript,
+wrt io blocking operations and so inturn it will take slightly more time than ideal.
 
 
 Program Versions
@@ -119,21 +124,24 @@ vaccine centers if any with slot availability.
 Modular Multifile version
 --------------------------
 
-User can enter the name of the state they want to search for, the vaccine they want, along
-with the date for which they want to check vaccine slot availability.
+User can get the vaccine slots availability status as it stands at the time of querying wrt
+FullState1Day view or for a SpecificDistrict1Week view.
+
+User needs to select the name of the state they want to search for, the district they are
+interested in (if they are looking for the District1Week view, else leave district as ANY),
+vaccine they want, along with date for which they want to check vaccine slot availability.
 
 The user can either enter the state name on their own and or chose from one of the names in
-the predefined set. Wrt date again either they can directly enter or use the calender that
-will come up. While wrt vaccine, they have to select one from the predefined set.
-
-NOTE: This is a syncronised serialised version, so it takes some time to show the results
-of the search.
+the predefined set. Same thing also applies to the District. However if one is interested in
+the FullState1Day view, then they need to leave the District set to ANY (the default). Wrt
+date either they can directly enter or use the calender that will come up. While wrt vaccine,
+they have to select one from the predefined set.
 
 There is also a periodic auto repeating search option, which will trigger the querying of
 the cowin server periodically without user requiring to explicitly press the search button
 each time. This is currently setup to do the periodic search once every 10 minutes. However
 do note that this logic just updates the result shown on screen, and possibly notifies the
-user using local desktop notification(experimental). User needs to monitor the same
+user using local desktop notification(experimental). User needs to monitor the same manualy
 (page and notification) and act on it as they see fit. Also this auto repeat logic may get
 paused by the browser, as noted previously.
 
@@ -142,14 +150,16 @@ paused by the browser, as noted previously.
    the same is requested for by the logic, after user clicks start-notifyme. This may
    not work in some of the setups - especially wrt mobiles/...
 
+NOTE: If user selects/sets the district to be anything other than ANY, then the logic will
+switch to District1Week mode and inturn the date will be reset to today. The user can change
+the date to something different, if they want to after selecting the district.
+
 
 From your local machine
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 User needs to download the html file and the related javascript files into a folder locally
 on their machine and then User needs to load the index.html page provided by this logic.
-Inturn it will list the vac centers where vaccines are available, for the specified state
-and date.
 
 NOTE: Local notifications dont seem to work in this context, as browsers seem to ignore
 local file urls wrt thier notification management logic.
@@ -166,8 +176,8 @@ NOTE: The logic is implemented using client side javascript, so it will run from
 browser. The github site is only used to serve the html and related javascript files.
 
 
-Single file version (old)
---------------------------
+Single file version (old - Dont use)
+-------------------------------------
 
 There is also a single file (i.e both html and js in a single file) version, which should allow
 a user using mobile to download this single file and then run locally from the mobile.
@@ -175,14 +185,15 @@ a user using mobile to download this single file and then run locally from the m
 The user can enter the state and the date for which they want to check availability for.
 
 NOTE: This is a asyncronous parallel version, so the search results appear, as they become
-available, on the screen. However this has not been updated wrt some of the new logics/flows/etc.
+available, on the screen. However this has not been updated wrt any of the new logics/flows/
+features/etc.
 
 
 NodeJS based
 =================
 
 If one runs the commandline nodejs based version of the program, then one can get the list of
-vaccine centers (with vaccine availability) wrt the specified state and specified date/week.
+vaccine centers (with vaccine availability) wrt specified state/district and specified date/week.
 
 node index.js --state "State Name" [optional arguments]
 
@@ -191,6 +202,8 @@ The optional arguments are
    --stype <STATE_1DAY|DISTRICT_1WEEK>
 
       STATE_1DAY: fetch all VCs in the specified state for the give date, across all districts OR
+
+         This is the default.
 
       DISTRICT_1WEEK: fetch VC slot availability for upto 1 week for the specified district.
 
@@ -295,4 +308,14 @@ v20210601IST2050
 Local multi level caching allowing caching of states/districts/vcs
 wrt 4date and 4week fetchs.
 
+
+v20210602IST1827
+=================
+
+Allow State-SpecificDistrict 1 Week slot availability view fetch from the
+browser based version of the logic.
+
+Allow multiple District1Week search results to be stored in db for the same
+district, provided they correspond to different 1Week views due to having
+different start dates.
 
