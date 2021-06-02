@@ -61,9 +61,10 @@ function handle_args(cmdArgs) {
 function handle_vaccenter(db, sk, dk, vcInst, passedAlong) {
 	state = db.states[sk];
 	dist = state.districts[dk];
-	msg = hlpr.str_tabular([10,12,8,8,32,8,16,24], [
+	msg = hlpr.str_tabular([10,12,8,8,8,32,8,16,24], [
 		vcInst.date,
 		vcInst.vaccine, vcInst.available_capacity_dose1, vcInst.available_capacity_dose2,
+		`${vcInst.min_age_limit}+`,
 		vcInst.name,
 		vcInst.pincode,
 		dist.name,

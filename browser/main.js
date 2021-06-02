@@ -104,11 +104,11 @@ function notify_user(title, body) {
 
 
 function show_vcs(el, db) {
-	tbl_append(el, 1, [ "Vaccine", "Dose1", "Dose2", "Name", "Pincode", "Dist", "State", "Age" ], "thead");
+	tbl_append(el, 1, [ "Vaccine", "Dose1", "Dose2", "Name", "Pincode", "Dist", "State", "Age", "Date" ], "thead");
 	dblookup_vaccenters(db, function(db, sk, dk, vc) {
 		state = db.states[sk];
 		dist = state.districts[dk];
-		tbl_append(el, 1, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+` ]);
+		tbl_append(el, 1, [ vc.vaccine, vc.available_capacity_dose1, vc.available_capacity_dose2, vc.name, vc.pincode, dist.name, state.name, `${vc.min_age_limit}+`, vc.date ]);
 		});
 }
 
