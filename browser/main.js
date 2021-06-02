@@ -129,7 +129,9 @@ function do_search(bNotifyMode) {
 			show_vcs(elMainTbl, db);
 			msg = `State: ${db.s_states}, Date: ${db.date}, Vac: ${db.vaccine}, Cnt: ${db.vacCnt}, NumOfVacCenters: ${db.vcCnt}`
 			notTitle = `Vac: ${db.vaccine}, Qty: ${db.vacCnt}, VacCenters: ${db.vcCnt}`
-			notBody = `State: ${db.s_states}, Date: ${db.date}`
+			let tDistrict = db.s_districts;
+			if (tDistrict === undefined) tDistrict = 'ANY';
+			notBody = `State: ${db.s_states}, Dist: ${tDistrict}, Date: ${db.date}`
 			update_status("Done: "+msg);
 			if (bNotifyMode && db.bNotifyMe) notify_user(notTitle, notBody);
 		});
