@@ -147,6 +147,13 @@ function get_searchparams() {
 	db['date'] = gDate;
 	db['vaccine'] = gVac;
 	db['s_states'] = gStates;
+	if (elDistrict.value !== 'ANY') {
+		db['s_type'] = STYPE_DISTRICT1WEEK;
+		db['s_districts'] = [ elDistrict.value ];
+	} else {
+		db['s_type'] = STYPE_STATE1DAY;
+		db['s_districts'] = undefined;
+	}
 }
 
 
@@ -155,7 +162,7 @@ function state_changed(ev) {
 	_dbget_states(db).then(() => {
 		let stateId = db_stateid(db, tState);
 		if (stateId === -1) {
-			update_status("ERRR: Unknown State", elStatusAlert);
+			update_status(`ERRR: Unknown State ${tState}`, elStatusAlert);
 			return;
 		}
 		_dbget_districts(db, stateId).then(() => {
