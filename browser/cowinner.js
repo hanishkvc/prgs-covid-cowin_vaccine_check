@@ -41,6 +41,7 @@ var fetchOptions = {
 
 
 function cowinner_init() {
+	console.log("INFO:CoWinner:", fetchOptions.headers['User-Agent']);
 	// If browser, then it wont have process object by default, while window object will be defined
 	if (typeof(window) === "undefined") {
 		if (typeof(process) === "undefined") {
