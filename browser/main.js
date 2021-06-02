@@ -53,7 +53,7 @@ function tbl_append(el, index, datas, part="tbody") {
 function select_clear(el) {
 	let numOptions = el.length;
 	for(i=0; i < numOptions; i++) {
-		el.remove(i);
+		el.remove(0);
 	}
 }
 
