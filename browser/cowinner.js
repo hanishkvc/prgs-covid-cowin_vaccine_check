@@ -219,20 +219,14 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 			let sessions = vc.sessions;
 			delete(vc.sessions);
 			sessions.forEach(vcInst => {
-				console.log(`DBUG:GetVCs4Week:1:${vc.center_id}, ${vc.name}, ${vcInst.date}, ${vcInst.min_age_limit}`);
-				let lVC = {}
-				for(k in vc) {
-					lVC[k] = vc[k];
+				console.log(`DBUG:GetVCs4Week:1:${vc.center_id}, ${vc.name}, ${vcInst.date} [${vc.date}], ${vcInst.min_age_limit}+`);
+				let lVC = Object.assign({}, vc);
+				lVC = Object.assign(lVC, vcInst);
+				if (db.states[stateId].districts[districtId][lVC.date] === undefined) {
+					db.states[stateId].districts[districtId][lVC.date] = {};
+					db.states[stateId].districts[districtId][lVC.date]['vaccenters'] = {};
 				}
-				for(k in vcInst) {
-					lVC[k] = vcInst[k];
-				}
-				console.log(`DBUG:GetVCs4Week:2:${vc.center_id}, ${vc.name}, ${vc.date}, ${vc.min_age_limit}`);
-				if (db.states[stateId].districts[districtId][vc.date] === undefined) {
-					db.states[stateId].districts[districtId][vc.date] = {};
-					db.states[stateId].districts[districtId][vc.date]['vaccenters'] = {};
-				}
-				let vacCenters = db.states[stateId].districts[districtId][vc.date]['vaccenters'];
+				let vacCenters = db.states[stateId].districts[districtId][lVC.date]['vaccenters'];
 				_add2vaccenter(vacCenters, lVC);
 				});
 			});
