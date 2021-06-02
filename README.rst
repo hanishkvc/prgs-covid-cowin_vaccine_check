@@ -319,3 +319,6 @@ Allow multiple District1Week search results to be stored in db for the same
 district, provided they correspond to different 1Week views due to having
 different start dates.
 
+Add missing fields to what is shown to user wrt both Browser and NodeJS based
+versions of the logic.
+

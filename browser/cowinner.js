@@ -35,7 +35,7 @@ const STYPE_DISTRICT1WEEK = "DISTRICT_1WEEK"
 const srvr = "https://cdn-api.co-vin.in/api";
 var fetchOptions = {
 	headers: {
-		"User-Agent": "india-hkvc/20210526.01 node-fetch/202105"
+		"User-Agent": "india-hkvc/20210602.20 node-fetch/202105"
 		}
 	}
 
@@ -164,7 +164,7 @@ function _add2vaccenter(oVCs, vcInst) {
 			if ((tVC.date === vcInst.date)
 				&& (tVC.min_age_limit === vcInst.min_age_limit)
 				&& (tVC.vaccine === vcInst.vaccine)) {
-				console.log("DBUG:Add2VC:Skipping:", vcInst);
+				console.log("DBUG:Add2VC:UpdateAndSkipping:", vcInst);
 				tVC.available_capacity = vcInst.available_capacity;
 				tVC.available_capacity_dose1 = vcInst.available_capacity_dose1;
 				tVC.available_capacity_dose2 = vcInst.available_capacity_dose2;
