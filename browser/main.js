@@ -191,7 +191,7 @@ function district_changed(ev) {
 	if (elDistrict.value !== 'ANY') {
 		// For now reset the date to today for District 1Week kind of search
 		elDate.value = _today();
-		update_status(`INFO: Date reset to today ${sDate}, change if needed`, elStatusAlert);
+		update_status(`INFO: Date reset to today ${elDate.value}, change if needed`, elStatusAlert);
 	}
 }
 
