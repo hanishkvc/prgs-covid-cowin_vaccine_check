@@ -128,9 +128,9 @@ function do_search(bNotifyMode) {
 		.then(() => {
 			show_vcs(elMainTbl, db);
 			notTitle = `Vac: ${db.vaccine}, Qty: ${db.vacCnt}, VacCenters: ${db.vcCnt}`
-			let tDistrict = db.s_districts;
-			if (tDistrict === undefined) tDistrict = 'ANY';
-			notBody = `State: ${db.s_states}, Dist: ${tDistrict}, Date: ${db.date}, SType: ${db.s_type}`
+			let tDistrict = db.s_districts ? db.s_districts : 'ANY';
+			let tAge = db.s_age ? db.s_age : 'ANY';
+			notBody = `State: ${db.s_states}, Dist: ${tDistrict}, Date: ${db.date}, SType: ${db.s_type}, Age: ${tAge}`
 			msg = notTitle + ", " + notBody;
 			update_status("Done: "+msg);
 			if (bNotifyMode && db.bNotifyMe) notify_user(notTitle, notBody);

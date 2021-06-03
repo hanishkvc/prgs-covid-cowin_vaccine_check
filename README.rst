@@ -154,6 +154,9 @@ NOTE: If user selects/sets the district to be anything other than ANY, then the 
 switch to District1Week mode and inturn the date will be reset to today. The user can change
 the date to something different, if they want to after selecting the district.
 
+One can attach age parameter has a query string to the URL, to filter the results to show
+only those matching the specified age group (i.e 18 or 45).
+
 
 From your local machine
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,6 +174,14 @@ Directly from github
 Access the following url to run the logic directly from the server
 
 https://hanishkvc.github.io/prgs-covid-cowin_vaccine_check/browser/
+
+If only interested in results corresponding to 18-44 age group, then you can use this link
+
+https://hanishkvc.github.io/prgs-covid-cowin_vaccine_check/browser/?age=18
+
+If only interested in results corresponding to 45+ age group, then you can use this link
+
+https://hanishkvc.github.io/prgs-covid-cowin_vaccine_check/browser/?age=45
 
 NOTE: The logic is implemented using client side javascript, so it will run from your
 browser. The github site is only used to serve the html and related javascript files.
@@ -326,8 +337,12 @@ versions of the logic.
 v20210603IST2114
 ==================
 
-Filter vaccine centers based on age search parameter.
+Filter vaccine centers based on age url query/search parameter.
 
 Cache time controllable, States/Districts list cached for a hour, while VCs
 cached for 5 mins.
+
+Nano UI cleanup; Auto set to today.
+
+Bit more info in the desktop notification.
 
