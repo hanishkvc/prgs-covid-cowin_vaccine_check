@@ -120,6 +120,8 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 	let vacType = db.vaccine;
 	let minCapacity = db.minCapacity
 	if (minCapacity === undefined) minCapacity = 1;
+	let minAge = db.s_age;
+	if (minAge === undefined) minAge = 0;
 	db['vcCnt'] = 0;
 	db['vacCnt'] = 0;
 	if (vacType === undefined) {
@@ -146,6 +148,7 @@ function dblookup_vaccenters(db, callback, passAlong=null) {
 						vcInst = vc[ik];
 						if ((vacType !== null) && (vacType !== vcInst.vaccine.toUpperCase())) continue;
 						if (vcInst.available_capacity < minCapacity) continue;
+						if (vcInst.min_age_limit < minAge) continue;
 						callback(db, sk, dk, vcInst, passAlong);
 						db['vcCnt'] += 1;
 						db['vacCnt'] += vcInst.available_capacity;

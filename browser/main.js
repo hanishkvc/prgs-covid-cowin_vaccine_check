@@ -237,11 +237,19 @@ function notify_clicked(ev) {
 }
 
 
+function handle_searchparams(db) {
+	let tURL = new URL(document.location);
+	let minAge = tURL.searchParams.get('age');
+	if (minAge !== null) db['s_age'] = minAge;
+}
+
+
 function start_here() {
 	console.log("INFO:StartHere:...");
 	db = {};
 	db['bNotifyMe'] = false;
 	db['cb_dbgetstates_statedone'] = handle_statedone;
+	handle_searchparams(db);
 	elDate.value = _today();
 	elSearch.onclick = search_clicked;
 	elAuto.onclick = auto_clicked;
