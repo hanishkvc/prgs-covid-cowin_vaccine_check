@@ -164,7 +164,7 @@ function state_changed(ev) {
 	_dbget_states(db).then(() => {
 		let stateId = db_stateid(db, tState);
 		if (stateId === -1) {
-			update_status(`ERRR: Unknown State ${tState}`, elStatusAlert);
+			update_status(`ERRR: Unknown State ${tState}, OR check internet connection`, elStatusAlert);
 			return;
 		}
 		_dbget_districts(db, stateId).then(() => {
