@@ -107,13 +107,14 @@
 		</div>
 		<hr>
 		<div id="notes">
+			<p> Based on CoWin PublicAPI. The results could be time delayed data due to server or local caching.
+			    If one tries too many new unrelated searches within a short time interval like 5 mins,
+			    server may block access for sometime. </p>
 			<p> NOTE: Selecting a specific district shows District-1WeekView. Else if ANY, State-1DayView is shown. </p>
 			<p> NOTE: Changes to search parameters will be used during next search(including auto). </p>
 			<p> NOTE: Browsers may pause/stop auto repeating search, so if oldest query time shown
 				  for search results is old, stop and start the auto search again. </p>
-			<p> Based on CoWin PublicAPI, could be time delayed data (due to server or local caching).
-			    If one tries too many new unrelated searches within a short time interval like 5 mins,
-			    server may block access for sometime. </p>
+			<p> Source for this logic+ is available at <a href="https://github.com/hanishkvc/prgs-covid-cowin_vaccine_check"> https://github.com/hanishkvc/prgs-covid-cowin_vaccine_check </a>, or looking at developer console in browser will also give most of it ;) </p>
 		</div>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
