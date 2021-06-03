@@ -239,8 +239,8 @@ function notify_clicked(ev) {
 
 function handle_searchparams(db) {
 	let tURL = new URL(document.location);
-	let minAge = tURL.searchParams.get('age');
-	if (minAge !== null) db['s_age'] = minAge;
+	let searchAge = tURL.searchParams.get('age');
+	if (searchAge !== null) db['s_age'] = Number(searchAge);
 }
 
 
