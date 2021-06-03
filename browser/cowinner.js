@@ -31,11 +31,14 @@
 const STYPE_STATE1DAY = "STATE_1DAY"
 const STYPE_DISTRICT1WEEK = "DISTRICT_1WEEK"
 
+const gRegionsCacheTime = 3600
+const gVCsCacheTime = 300
+
 
 const srvr = "https://cdn-api.co-vin.in/api";
 var fetchOptions = {
 	headers: {
-		"User-Agent": "india-hkvc/20210602.20 node-fetch/202105"
+		"User-Agent": "india-hkvc/20210603.15 node-fetch/202105"
 		}
 	}
 
@@ -191,7 +194,8 @@ async function dbget_vaccenters_fordate(db, stateId, districtId, date=null) {
 			db.states[stateId].districts[districtId][date] = {}
 			theDist = db.states[stateId].districts[districtId][date];
 		}
-		if (cache_not_fresh(theDist, 'DBGetVCs4Date', `${db.states[stateId].districts[districtId].name}:${date}`)) {
+		let forMe = `${db.states[stateId].districts[districtId].name}:${date}`;
+		if (cache_not_fresh(theDist, 'DBGetVCs4Date', forMe, gVCsCacheTime)) {
 			db.GetVCsFetchStatus = "CACHED";
 			if (db.GetVCsFetchTime > theDist.time) db.GetVCsFetchTime = theDist.time;
 			return;
@@ -221,7 +225,8 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 	let newDate = {};
 	try {
 		let cacheTimeKey = `ctime_${date}`;
-		if (cache_not_fresh(db.states[stateId].districts[districtId], 'DBGetVCs4Week', `${db.states[stateId].districts[districtId].name}:${date}`, cacheTimeKey)) {
+		let forMe = `${db.states[stateId].districts[districtId].name}:${date}`;
+		if (cache_not_fresh(db.states[stateId].districts[districtId], 'DBGetVCs4Week', forMe, gVCsCacheTime, cacheTimeKey)) {
 			db.GetVCsFetchStatus = "CACHED";
 			let theDist = db.states[stateId].districts[districtId];
 			if (db.GetVCsFetchTime > theDist.time) db.GetVCsFetchTime = theDist.time;
@@ -256,12 +261,12 @@ async function dbget_vaccenters_forweek(db, stateId, districtId, date=null) {
 }
 
 
-function cache_not_fresh(acha, from, forMe, timeKey='time') {
+function cache_not_fresh(acha, from, forMe, cacheTime=300, timeKey='time') {
 	var prevTime = acha[timeKey];
 	var curTime = Date.now()
 	if (prevTime !== undefined) {
 		deltaSecs = (curTime - prevTime)/1000
-		if (deltaSecs < 300) {
+		if (deltaSecs < cacheTime) {
 			console.log(`INFO:CacheNotFresh:${from}: Too soon for ${forMe}: ${deltaSecs}`);
 			return true;
 		}
@@ -277,7 +282,7 @@ function cache_not_fresh(acha, from, forMe, timeKey='time') {
 async function _dbget_districts(db, stateId) {
 	if (db.states[stateId]['districts'] === undefined) db.states[stateId]['districts'] = {};
 	try {
-		if (cache_not_fresh(db.states[stateId], '_DBGetDists', db.states[stateId].name)) return;
+		if (cache_not_fresh(db.states[stateId], '_DBGetDists', db.states[stateId].name, gRegionsCacheTime)) return;
 		let oDists = await _get_districts(stateId);
 		for(distK in oDists.districts) {
 			let dist = oDists.districts[distK];
@@ -296,7 +301,7 @@ async function _dbget_districts(db, stateId) {
 async function _dbget_states(db) {
 	if (db['states'] === undefined) db['states'] = {};
 	try {
-		if (cache_not_fresh(db, '_DBGetStates', 'India')) return;
+		if (cache_not_fresh(db, '_DBGetStates', 'India', gRegionsCacheTime)) return;
 		let data = await _get_states();
 		for(stateK in data.states) {
 			let state = data.states[stateK];
