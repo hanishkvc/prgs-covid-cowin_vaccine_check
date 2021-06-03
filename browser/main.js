@@ -175,17 +175,22 @@ function state_changed(ev) {
 }
 
 
+function _today() {
+	let oDate = new Date();
+	let tYear = oDate.getFullYear();
+	let tMonth = oDate.getMonth()+1;
+	if (tMonth < 10) tMonth = `0${tMonth}`;
+	let tDate = oDate.getDate();
+	if (tDate < 10) tDate = `0${tDate}`;
+	let sDate = `${tYear}-${tMonth}-${tDate}`;
+	return sDate;
+}
+
+
 function district_changed(ev) {
 	if (elDistrict.value !== 'ANY') {
 		// For now reset the date to today for District 1Week kind of search
-		let oDate = new Date();
-		let tYear = oDate.getFullYear();
-		let tMonth = oDate.getMonth()+1;
-		if (tMonth < 10) tMonth = `0${tMonth}`;
-		let tDate = oDate.getDate();
-		if (tDate < 10) tDate = `0${tDate}`;
-		let sDate = `${tYear}-${tMonth}-${tDate}`;
-		elDate.value = sDate;
+		elDate.value = _today();
 		update_status(`INFO: Date reset to today ${sDate}, change if needed`, elStatusAlert);
 	}
 }
@@ -237,6 +242,7 @@ function start_here() {
 	db = {};
 	db['bNotifyMe'] = false;
 	db['cb_dbgetstates_statedone'] = handle_statedone;
+	elDate.value = _today();
 	elSearch.onclick = search_clicked;
 	elAuto.onclick = auto_clicked;
 	elNotify.onclick = notify_clicked;
