@@ -21,6 +21,8 @@ var gStates = [ "KERALA", "KARNATAKA" ];
 var gVac = "ANY";
 var db = null;
 var gAutoId = 0;
+const AUTO_INTERVAL = 10;
+var gAutoCntDown = AUTO_INTERVAL;
 
 
 function div_append(el, text) {
@@ -204,6 +206,17 @@ function search_clicked(ev) {
 }
 
 
+function auto_cb() {
+	gAutoCntDown -= 1;
+	if (gAutoCntDown <= 0) {
+		search_clicked(null);
+		gAutoCntDown = AUTO_INTERVAL;
+	}
+	update_status(`INFO: ${gAutoCntDown} mins till next auto repeat search`);
+	elAuto.textContent = `Stop Auto(${gAutoCntDown})`;
+}
+
+
 function auto_clicked(ev) {
 	search_clicked(ev); // ev will be wrong, but is fine for now.
 	if (gAutoId) {
@@ -214,8 +227,9 @@ function auto_clicked(ev) {
 	} else {
 		get_searchparams();
 		update_status("Started auto repeating search");
-		gAutoId = setInterval(search_clicked, 10*60*1000, null);
-		elAuto.textContent = "Stop Auto";
+		gAutoCntDown = AUTO_INTERVAL;
+		gAutoId = setInterval(auto_cb, 1*60*1000, null);
+		elAuto.textContent = `Stop Auto(${gAutoCntDown})`;
 	}
 }
 

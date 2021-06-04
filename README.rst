@@ -150,6 +150,9 @@ paused by the browser, as noted previously.
    the same is requested for by the logic, after user clicks start-notifyme. This may
    not work in some of the setups - especially wrt mobiles/...
 
+   There is a periodically (once per minute) updating countdown which is shown in the
+   auto button to indicate as to when the next auto repeating search will be triggered.
+
 NOTE: If user selects/sets the district to be anything other than ANY, then the logic will
 switch to District1Week mode and inturn the date will be reset to today. The user can change
 the date to something different, if they want to after selecting the district.
@@ -241,7 +244,11 @@ mode.
 ChangeLog
 ############
 
-This contains only some of the changes/updates
+This captures only some of the changes/updates. Started this program to help out those stuck
+with non availability of vaccine doses, past their 2nd dose time (includign myself), who also
+didnt want to share their details to 3rd parties on the net for alert service or so and also
+at same time wouldnt have wanted to overload the servers. Have also tried to add some features
+to easy the use in general, as I found further free time in between.
 
 vInitialExtRelease
 ====================
@@ -345,4 +352,10 @@ cached for 5 mins.
 Nano UI cleanup; Auto set to today.
 
 Bit more info in the desktop notification.
+
+
+v20210604IST1131
+==================
+
+Countdown shown wrt Auto Repeating search.
 
